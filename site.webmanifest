@@ -1,0 +1,18 @@
+{
+  "name": "Other Hours",
+  "short_name": "Other Hours",
+  "description": "Find the materials, places and people behind your next creative project.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ede9dc",
+  "theme_color": "#ede9dc",
+  "icons": [
+    {
+      "src": "./assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
