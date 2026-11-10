@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ede9dc" />
+    <meta name="description" content="Find the materials, places and people behind your next creative project. A little less scrolling. A lot more doing." />
+    <meta property="og:title" content="Other Hours — Make something of your free time" />
+    <meta property="og:description" content="Your city is full of things to make. Find supplies, workshops and community for your next project." />
+    <title>Other Hours — A little less scrolling, a lot more doing</title>
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <div class="ticker" aria-hidden="true"><div class="ticker-track">HOBBIES ARE BACK &nbsp;✳&nbsp; YOU HAVE MORE THAN ONE THING GOING ON &nbsp;✳&nbsp; HOBBIES ARE BACK &nbsp;✳&nbsp; YOU HAVE MORE THAN ONE THING GOING ON &nbsp;✳&nbsp;</div></div>
+    <header class="site-header">
+      <a class="brand" href="#home" aria-label="Other Hours home"><span class="brand-star">✳</span> <span data-brand>other hours</span><span class="brand-dot">.</span></a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="#explore">Find a project</a><a href="#how">How it works</a><a href="#places">Local places</a>
+      </nav>
+      <div class="header-actions"><button id="saved-button" class="saved-button" aria-label="View saved projects"><span>Saved</span> <span id="saved-count" class="count">0</span></button><span class="city-indicator"><span class="live-dot"></span> NYC, FIRST</span></div>
+    </header>
+    <main id="main-content">
+      <section class="hero" id="home">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="stamp">ISSUE NO. 001</span> FOR ALL YOUR OTHER INTERESTS</p>
+          <h1>Make something<br />of your <em>free time.</em></h1>
+          <p class="hero-sub">That thing you saw online? Go make it. We’ll help you find the materials, places, and people to get started.</p>
+          <div class="search-panel" id="search-panel">
+            <div class="search-tabs" role="tablist" aria-label="Search type"><button class="search-tab active" id="tab-idea" role="tab" aria-selected="true">I have an idea</button><button class="search-tab" id="tab-link" role="tab" aria-selected="false">I have a link <span class="mini-arrow">↗</span></button></div>
+            <form id="search-form">
+              <label class="sr-only" id="search-label" for="search-query">What would you like to make?</label>
+              <div class="search-row"><span class="search-icon">⌕</span><input id="search-query" placeholder="I want to make a leather journal..." autocomplete="off" required /><button type="submit" class="round-submit" aria-label="Find my project">↗</button></div>
+              <div id="caption-container" class="caption-container" hidden><label for="caption-input">What happens in the video? <span>(optional, but helps us find the right supplies)</span></label><textarea id="caption-input" rows="2" placeholder="e.g. A creator making a leather journal by hand"></textarea></div>
+            </form>
+            <p class="search-footnote" id="search-footnote">TRY IT: <button data-example="Bookbinding">BOOKBINDING</button> <button data-example="Embroidery">EMBROIDERY</button> <button data-example="Pottery">POTTERY</button></p>
+          </div>
+          <div class="hero-annotation"><span>↑</span><span>THE BEGINNING OF A VERY GOOD RABBIT HOLE.</span></div>
+        </div>
+        <div class="hero-art" aria-label="An illustration of making tools, notes, and creative projects" role="img">
+          <div class="art-canvas">
+            <div class="art-note note-one"><span>TO DO:</span><br />make stuff<br />meet people<br />go outside<br /><span class="note-check">✓</span></div>
+            <div class="thread thread-one"></div><div class="thread thread-two"></div>
+            <div class="art-book"><span>FIELD<br />NOTES</span><small>VOL. 01 / MADE BY YOU</small></div>
+            <div class="art-paper"><div class="paper-circle"></div><div class="paper-lines">ideas worth<br />leaving the<br />house for.</div></div>
+            <div class="art-tape tape-one"></div><div class="art-tape tape-two"></div>
+            <div class="art-sticker">REAL<br />LIFE<br /><span>›››</span></div>
+            <div class="art-caption">A LITTLE OFFLINE IS GOOD FOR YOU. © 2026</div>
+          </div>
+        </div>
+      </section>
+      <section class="marquee" aria-label="Brand slogan"><span>MAKE IT. DON'T JUST SAVE IT.</span><span class="marquee-spark">✳</span><span>MAKE IT. DON'T JUST SAVE IT.</span><span class="marquee-spark">✳</span></section>
+      <section class="projects-section section-padding" id="explore">
+        <div class="section-top"><div><p class="eyebrow">01 / THE INDEX</p><h2>What are you <em>into?</em></h2></div><p>Small beginnings. Big rabbit holes.<br />Start wherever you like.</p></div>
+        <div class="filters" id="filters"><button class="filter active" data-filter="all">Everything <span>↗</span></button><button class="filter" data-filter="paper">Paper & print</button><button class="filter" data-filter="textile">Needle & thread</button><button class="filter" data-filter="objects">Things & objects</button><button class="filter" data-filter="under30">Starter budget under $30</button></div>
+        <div class="project-grid" id="project-grid"></div>
+        <div id="empty-state" class="empty-state" hidden><h3>Not in our index. <em>Yet.</em></h3><p>We’re starting with a carefully curated NYC edition. Try a related craft, or tell us what’s missing.</p><button class="pill-black" id="reset-search">See all projects ↗</button></div>
+      </section>
+      <section class="how-section section-padding" id="how">
+        <div class="section-top"><div><p class="eyebrow">02 / THE METHOD</p><h2>From saved post<br />to <em>Saturday plan.</em></h2></div><p>We do the tedious part. You get to do the fun part.</p></div>
+        <div class="method-grid"><div class="method"><span>①</span><h3>Find your thing.</h3><p>Search a hobby or bring a link from your scrolling spiral.</p></div><div class="method"><span>②</span><h3>Get the list.</h3><p>See a real materials checklist with a reuse-first mindset.</p></div><div class="method"><span>③</span><h3>Find your people.</h3><p>Discover NYC shops, studios, classes, and places to begin.</p></div></div>
+      </section>
+      <section class="places-section section-padding" id="places"><div class="section-top"><div><p class="eyebrow">03 / AROUND THE CORNER</p><h2>Support your <em>local.</em></h2></div><p>Real places, not imaginary AI recommendations.<br />Listings are curated; stock and schedules are not live.</p></div><div id="places-grid" class="places-grid"></div></section>
+      <section class="closing"><div class="closing-left"><p class="eyebrow">A NOTE FROM THE OTHER SIDE OF YOUR SCREEN</p><h2>Your feed has enough hobbies.<br /><em>Go get one.</em></h2><a href="#home" class="pill-cream">Find your thing <span>↗</span></a></div><div class="closing-art" aria-hidden="true"><span>HOURS<br />WELL<br />SPENT<span class="punctuation">.</span></span></div></section>
+    </main>
+    <footer><a class="footer-brand" href="#home">✳ <span data-brand>other hours</span>.</a><p>For all the things you do when you're doing your own thing.</p><span>MADE FOR REAL LIFE · NYC FIRST · © 2026</span></footer>
+    <div id="detail-root" aria-live="polite"></div>
+    <div id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
