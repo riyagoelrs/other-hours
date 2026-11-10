@@ -15,21 +15,38 @@ python3 -m http.server 4173
 
 Or use VS Code Live Server. Deploy as a static site on Vercel, Netlify, or GitHub Pages.
 
+## NYC launch edition — expanded
+
+**33 original starter projects, 12 local shops / studios / libraries, and 10 community and class resources.**
+
+Projects cover bookbinding, embroidery, knitting, crochet, punch needle, sashiko mending, fabric block printing, weaving, linocut, zines, watercolor, film photography, jewelry, ceramics and more. Open a project for a materials checklist, 3–4 steps, local sourcing options and relevant groups. Click **People** to browse NYC meetups and classes directly.
+
+**Paste a link:** The link tab accepts public YouTube, TikTok, Instagram and Pinterest URLs. It attempts permitted public oEmbed metadata for YouTube/TikTok/Instagram, then matches available post-title information against curated starter guides. If a post only reveals an opaque identifier or insufficient metadata, add a short optional video description and try again. It does *not* fetch full transcripts, watch videos, or generatively deduce supplies from hidden contents. Results show materials, local places and people together with source/provenance notes.
+
+**NYC-only beta:** the hero explicitly says NYC-first / all five boroughs. Supplier and community discovery is curated, not sorted by real-time distance, availability or inventory. All users may browse the site; other cities are not listed yet.
+
+**To edit in Codex:** open this GitHub repo in Codex; see [AGENTS.md](./AGENTS.md) for design, data and safety guidelines. Edit [data.js](./data.js) to add projects without touching UI code. Each project connects to real places and groups through `placeIds` and `communityIds`. Run:
+```bash
+node --check app.js
+node --check data.js
+node scripts/validate.mjs
+```
+
 ## What works
 
-- Hobby-keyword search with 6 curated projects
+- Hobby-keyword search with 33 curated projects
 - Discoverable filters, category browsing, mobile layouts
 - Project detail view with a materials checklist saved locally in your browser
 - Save/unsave projects, saved project index, and copyable deep links (`#project/slug`)
-- Instagram/TikTok/YouTube/Pinterest link intake **with user-supplied video description**
-- Verified external links to a starter NYC directory (curated, **no live stock/booking claims**)
+- Social-link intake with limited permitted public title lookups and an optional user-description fallback
+- Verified external links to a broader NYC places & community directory (curated, **no live stock/booking claims**)
 - Keyboard-friendly modal/detail navigation, no external analytics
 
 ## Important MVP limitations
 
 - Not an AI chatbot. Search is deterministic (local keyword matching). The UI never claims to have parsed a video when it hasn't.
-- A link alone cannot automatically yield supplies today; users can paste a description or choose a related category. Official social platforms restrict general transcript access.
-- No integrated live inventory, live class booking, GPS, accounts, payment processing, or automatic price comparison.
+- Some public links automatically match projects using their public metadata; many posts do not expose enough details. If they fail, users must provide a brief description. We never imply a complete video has been transcribed.
+- No full video transcripts, integrated live inventory, live class booking, GPS, accounts, payment processing, or automatic price comparison.
 - Budget values are **illustrative supply estimates**, not quotations or in-stock prices.
 - Shops and classes are curated for NYC; verify opening times and availability on provider websites.
 - `localStorage` is device/browser-local, not a cloud account.
