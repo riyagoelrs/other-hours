@@ -49,9 +49,27 @@ Or use VS Code Live Server. Deploy as a static site on Vercel, Netlify, or GitHu
 - BKLYN CLAY: https://bklynclay.com/
 - Center for Book Arts: https://centerforbookarts.org/
 
+## Publish a live preview with GitHub Pages (no Vercel needed)
+
+The app is a plain static site, so you can host it free with GitHub Pages.
+
+1. Open **[Repository → Settings → Pages](https://github.com/riyagoelrs/other-hours/settings/pages)**.
+2. Under **Build and deployment**, set **Source** to **Deploy from a branch**.
+3. Select branch **main**, folder **/(root)**, then click **Save**.
+4. After GitHub finishes publishing, the website will appear at **https://riyagoelrs.github.io/other-hours/**.
+
+GitHub Pages publishes the current `main` branch automatically whenever it changes. No API keys, Vercel connection, or build tools are required.
+
+### Safe edit/revert workflow
+
+- Open a feature branch from `main`, make changes there, and open a pull request.
+- GitHub Pages (branch publishing) shows **only the merged `main` version**, not separate automatic PR previews. Review source diffs or use the local preview before merging.
+- Merge only what you want live. If you dislike a merged change, use **Revert** on the merged pull request or revert its commit.
+- The site's current public URL is predictable, but it **will not work until Pages is enabled** in repo settings.
+
 ## GitHub workflow — preview and revert
 
-This repository is the source of truth for the prototype. Each change is a Git commit. For a visual preview, connect this repository to Vercel or enable GitHub Pages; Vercel can create a separate preview URL for every pull request.
+This repository is the source of truth for the prototype. Each change is a Git commit. For a visual preview, enable GitHub Pages as described above. Optional Vercel integration can create per-pull-request previews later.
 
 1. Start a new branch for each experiment (e.g. `feature/homepage-type`).
 2. Make edits and open a pull request against `main`.
