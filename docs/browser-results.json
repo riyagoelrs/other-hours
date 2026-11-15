@@ -1,0 +1,19 @@
+{
+  "baseUrl": "http://127.0.0.1:4175/other-hours/",
+  "checks": [
+    "desktop: A + legacy saves/checklists + keyboard dialog passed",
+    "desktop: B metadata fixture + restricted fallback + editable saved plan passed",
+    "desktop: C classes, suppliers, public creator links and refinement passed",
+    "desktop: D Queens budget and cross-view context passed",
+    "desktop: E browse-to-action-plan passed",
+    "desktop: sourced map/list and nearby place selection passed",
+    "desktop: no page errors or horizontal overflow at 320\u20131440px",
+    "mobile: A + legacy saves/checklists + keyboard dialog passed",
+    "mobile: B metadata fixture + restricted fallback + editable saved plan passed",
+    "mobile: C classes, suppliers, public creator links and refinement passed",
+    "mobile: D Queens budget and cross-view context passed",
+    "mobile: E browse-to-action-plan passed",
+    "mobile: sourced map/list and nearby place selection passed",
+    "mobile: no page errors or horizontal overflow at 320\u20131440px"
+  ]
+}

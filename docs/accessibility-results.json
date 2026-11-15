@@ -1,0 +1,42 @@
+[
+  {
+    "width": 1440,
+    "state": "home",
+    "violations": []
+  },
+  {
+    "width": 1440,
+    "state": "dialog",
+    "violations": []
+  },
+  {
+    "width": 1440,
+    "state": "materials",
+    "violations": []
+  },
+  {
+    "width": 1440,
+    "state": "creators",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "state": "home",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "state": "dialog",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "state": "materials",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "state": "creators",
+    "violations": []
+  }
+]
