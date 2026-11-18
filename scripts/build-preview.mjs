@@ -14,6 +14,15 @@ const illustrations = Object.fromEntries(
       encode("assets/illustrations/" + file, "image/svg+xml"),
     ]),
 );
+const photos = Object.fromEntries(
+  fs
+    .readdirSync("assets/photos")
+    .filter((f) => f.endsWith(".webp"))
+    .map((file) => [
+      "./assets/photos/" + file,
+      encode("assets/photos/" + file, "image/webp"),
+    ]),
+);
 let css = fs
   .readFileSync("styles.css", "utf8")
   .replace(
@@ -33,20 +42,24 @@ let page = fs
   );
 for (const [id, url] of Object.entries(illustrations))
   page = page.replaceAll("./assets/illustrations/" + id + ".svg", url);
+for (const [file, url] of Object.entries(photos))
+  page = page.replaceAll(file, url);
 page = page.replaceAll(
   "./assets/favicon.svg",
   encode("assets/favicon.svg", "image/svg+xml"),
 );
-const app = fs
+let app = fs
   .readFileSync("app.js", "utf8")
   .replaceAll(
     'src="./assets/illustrations/${artFor(p)}.svg"',
     'src="${OH_PREVIEW_ASSETS[artFor(p)]}"',
   )
   .replaceAll(
-    'src="./assets/illustrations/${c.art}.svg"',
-    'src="${OH_PREVIEW_ASSETS[c.art]}"',
+    "`./assets/illustrations/${c.art}.svg`",
+    "OH_PREVIEW_ASSETS[c.art]",
   );
+for (const [file, url] of Object.entries(photos))
+  app = app.replaceAll(file, url);
 const scripts =
   [
     "config.js",

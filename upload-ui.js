@@ -55,7 +55,7 @@ const OH_UPLOAD_UI = (() => {
     const url = URL.createObjectURL(blob);
     urls.push(url);
     card.querySelector(".reference-file-open").innerHTML =
-      `<a href="${html(url)}" download="${html(row.name)}" aria-label="Open original ${html(row.name)}" target="_blank" rel="noopener">Open original ↗</a>`;
+      `<a href="${html(url)}" download="${html(row.name)}" aria-label="Open original ${html(row.name)}" target="_blank" rel="noopener">Open original</a>`;
     if (row.kind === "image") {
       const image = document.createElement("img");
       image.alt = "Your reference: " + row.name;

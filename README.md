@@ -73,9 +73,9 @@ The [optional service](service/README.md) improves browser-restricted metadata a
 
 ## Design and review
 
-See the [before-and-after review and design system](docs/design-review.md) and [desktop / mobile screenshots](docs/screenshots). All editorial illustrations are original vector artwork; self-hosted typefaces retain their OFL licenses. No third-party lifestyle photography is used.
+The current [hobby club journal direction](docs/scrapbook-design.md) combines a newspaper masthead, handwritten notes, blush paper, yellow plaid and taped photo prints, following the written newspapers/journals/Clueless/Mean Girls reference. The original guide illustrations remain, with complementary pastel backgrounds. Five self-hosted Pexels photographs retain [source and license records](assets/photos/README.md); the pictures are mood imagery, independent of the NYC directory. All four self-hosted typeface families retain their OFL licenses.
 
-The supplied Pinterest board returned HTTP 403, so its pins could not be inspected. The implemented direction is provisional and based on the existing Other Hours editorial identity. Reference screenshots can guide a later visual refinement.
+The supplied Pinterest board returned HTTP 403, so its pins could not be inspected. This refinement follows the user's written references rather than claiming to reproduce those pins. The [earlier design review](docs/design-review.md) and [screenshots](docs/screenshots) document the preceding field-guide layout; new browser screenshots could not be captured in the current managed environment.
 
 ## GitHub Pages, review and rollback
 

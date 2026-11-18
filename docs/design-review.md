@@ -1,5 +1,7 @@
 # Other Hours: before-and-after design review
 
+This document records the earlier field-guide redesign. The subsequent [hobby club journal refinement](scrapbook-design.md) describes the current palette, photography, typography and verification limits. Screenshots below predate that visual refinement.
+
 ## Audit before implementation
 
 The repository’s README, AGENTS, page, styles, interaction code and complete original catalog were inspected. The live page’s HTML matched the checkout byte for byte. Desktop (1440 px) and mobile (390 px) captures covered the home page and its lower sections; the leather journal detail was also inspected. External browser certificates in the Cloud environment were not trusted, so the matching original source was served locally, with public font resources retrieved through the system-trusted HTTP client.
