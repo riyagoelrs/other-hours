@@ -31,6 +31,8 @@
     <script defer src="./data.js"></script>
     <script defer src="./discovery.js"></script>
     <script defer src="./ingestion.js"></script>
+    <script defer src="./uploads.js"></script>
+    <script defer src="./upload-ui.js"></script>
     <script defer src="./app.js"></script>
   </head>
   <body>
@@ -136,6 +138,52 @@
               <p class="search-help">
                 A project, a question, a TikTok. Start anywhere.
               </p>
+              <div class="upload-tools" aria-label="Add inspiration files">
+                <button type="button" id="add-photos" class="upload-button">
+                  Add photos <span aria-hidden="true">＋</span>
+                </button>
+                <button type="button" id="add-files" class="upload-button">
+                  Add files <span aria-hidden="true">＋</span>
+                </button>
+                <span>or drop files or a link here</span>
+                <input
+                  type="file"
+                  id="photo-upload"
+                  accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/heic,image/heif,.heic,.heif"
+                  multiple
+                  hidden
+                />
+                <input
+                  type="file"
+                  id="file-upload"
+                  accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/heic,image/heif,video/mp4,video/quicktime,video/webm,application/pdf,text/plain,text/markdown,.heic,.heif,.mov,.pdf,.txt,.md"
+                  multiple
+                  hidden
+                />
+              </div>
+              <p
+                id="upload-status"
+                class="upload-status"
+                role="status"
+                hidden
+              ></p>
+              <div id="upload-draft" class="upload-draft" hidden>
+                <div class="upload-draft-heading">
+                  <span id="upload-count"></span
+                  ><button type="button" id="clear-uploads" class="text-button">
+                    Remove all
+                  </button>
+                </div>
+                <div id="upload-list" class="reference-file-grid"></div>
+                <p class="small-note">
+                  Up to 6 files, 100 MB total. Photos/PDFs: 20 MB each; videos:
+                  50 MB; text: 1 MB. Saved with your plan on this device.
+                </p>
+                <p class="small-note">
+                  Add a description below to match a photo, PDF or video to a
+                  guide. Text files can supply their own materials and steps.
+                </p>
+              </div>
               <div id="caption-container" class="caption-container" hidden>
                 <label for="caption-input"
                   >Add the caption, a description, or a transcript you can

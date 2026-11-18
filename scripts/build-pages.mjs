@@ -8,6 +8,8 @@ for (const file of [
   "data.js",
   "discovery.js",
   "ingestion.js",
+  "uploads.js",
+  "upload-ui.js",
   "app.js",
   "config.js",
   "site.webmanifest",

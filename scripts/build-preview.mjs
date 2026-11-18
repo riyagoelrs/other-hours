@@ -48,7 +48,14 @@ const app = fs
     'src="${OH_PREVIEW_ASSETS[c.art]}"',
   );
 const scripts =
-  ["config.js", "data.js", "discovery.js", "ingestion.js"]
+  [
+    "config.js",
+    "data.js",
+    "discovery.js",
+    "ingestion.js",
+    "uploads.js",
+    "upload-ui.js",
+  ]
     .map((file) => fs.readFileSync(file, "utf8"))
     .join("\n;\n") +
   "\n;\nconst OH_PREVIEW_ASSETS=" +
@@ -57,7 +64,8 @@ const scripts =
   app;
 page = page.replace(
   "</body>",
-  () => "<script>" +
+  () =>
+    "<script>" +
     scripts.replaceAll("</script", "<\\/script") +
     "</script>\n</body>",
 );

@@ -1,0 +1,13 @@
+{
+  "baseUrl": "http://127.0.0.1:4175/other-hours/",
+  "checks": [
+    "desktop: native photo chooser, image preview, local-only handling and honest unresolved result passed",
+    "desktop: photo/text plan save, reload, exact-byte original download and reference-aware deletion passed",
+    "desktop: file/link dropping, mixed provenance, stale-result protection and removing files passed",
+    "desktop: rejected types, escaped filenames, reselection and storage-failure behavior passed",
+    "iphone-width: native photo chooser, image preview, local-only handling and honest unresolved result passed",
+    "iphone-width: photo/text plan save, reload, exact-byte original download and reference-aware deletion passed",
+    "iphone-width: file/link dropping, mixed provenance, stale-result protection and removing files passed",
+    "iphone-width: rejected types, escaped filenames, reselection and storage-failure behavior passed"
+  ]
+}

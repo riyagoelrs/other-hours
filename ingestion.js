@@ -187,7 +187,9 @@ const OH_INGESTION = (() => {
       confidence: !matches.length
         ? "unresolved"
         : evidence.some((e) =>
-              ["transcript", "description", "manual"].includes(e.kind),
+              ["transcript", "description", "manual", "document"].includes(
+                e.kind,
+              ),
             )
           ? "suggested-match"
           : "title-only",
@@ -198,6 +200,68 @@ const OH_INGESTION = (() => {
       disclosure:
         "Matched guides are editorial starting points. Suggested supplies are not an exact reconstruction of the video.",
       createdAt: new Date().toISOString(),
+    };
+  }
+  function fromUploads(
+    { attachments, query = "", description = "", textKind = "manual" },
+    options,
+    baseResult = null,
+  ) {
+    const evidence = baseResult ? [...baseResult.evidence] : [];
+    if (!baseResult && query.trim())
+      evidence.push({
+        kind: "manual",
+        text: query.trim().slice(0, 16000),
+        origin: "user-supplied",
+      });
+    if (!baseResult && description.trim())
+      evidence.push({
+        kind: ["description", "transcript"].includes(textKind)
+          ? textKind
+          : "manual",
+        text: description.trim().slice(0, 16000),
+        origin: "user-supplied",
+      });
+    for (const file of attachments)
+      if (file.kind === "text" && file.text?.trim())
+        evidence.push({
+          kind: "document",
+          text: file.text.trim().slice(0, 16000),
+          origin: "user-upload",
+          fileName: file.name,
+        });
+    const warnings = baseResult ? [...baseResult.warnings] : [];
+    if (attachments.some((f) => f.kind !== "text"))
+      warnings.push(
+        "Photos, PDFs and videos are reference files. Project matches use your description or an uploaded text file; visual contents have not been analyzed.",
+      );
+    if (attachments.some((f) => f.textTruncated))
+      warnings.push(
+        "Only the first 16,000 characters of each text file were used for matching. The original file is kept when you save the plan.",
+      );
+    const result = buildResult(
+      {
+        url: baseResult?.sourceUrl || "",
+        provider: baseResult?.provider || "uploads",
+      },
+      evidence,
+      warnings,
+      options.data,
+      options.discovery,
+    );
+    return {
+      ...result,
+      sourceType: baseResult ? "link-and-files" : "files",
+      attachments: attachments.map((f) => ({
+        id: f.id,
+        name: f.name,
+        size: f.size,
+        type: f.type,
+        kind: f.kind,
+        lastModified: f.lastModified || 0,
+      })),
+      disclosure:
+        "These are editable starting points. Matches use your notes and readable text, while photos, PDFs and videos remain reference files. Files save only on this device.",
     };
   }
   async function ingest(input, options) {
@@ -367,7 +431,15 @@ const OH_INGESTION = (() => {
       return false;
     return true;
   }
-  return { identify, metadata, extract, buildResult, ingest, validResult };
+  return {
+    identify,
+    metadata,
+    extract,
+    buildResult,
+    fromUploads,
+    ingest,
+    validResult,
+  };
 })();
 if (typeof module !== "undefined" && module.exports)
   module.exports = OH_INGESTION;

@@ -221,7 +221,7 @@ function renderSavedExtras() {
       ? `<h3 class="saved-plans-heading">Interests to come back to</h3><div class="active-query">${interests.map((id) => `<button class="button secondary" data-interest-open="${id}">${html(data.hobbies[id].name)} ↗</button><button class="text-button" data-interest-remove="${id}" aria-label="Remove saved interest ${html(data.hobbies[id].name)}">Remove</button>`).join("")}</div>`
       : "") +
     (plans.length
-      ? `<h3 class="saved-plans-heading">Your inspiration plans</h3><div class="directory-grid">${plans.map((p) => `<article class="saved-plan-card"><p class="eyebrow">EDITED BY YOU · SAVED ON THIS DEVICE</p><h3>${html(p.title)}</h3><p>${p.source?.provider ? "Inspired by a " + html(p.source.provider) + " link." : "Your own starter plan."}</p><button class="text-button" data-plan-open="${p.id}">Edit plan ↗</button><button class="text-button" data-plan-delete="${p.id}">Remove</button></article>`).join("")}</div>`
+      ? `<h3 class="saved-plans-heading">Your inspiration plans</h3><div class="directory-grid">${plans.map((p) => `<article class="saved-plan-card"><p class="eyebrow">EDITED BY YOU · SAVED ON THIS DEVICE</p><h3>${html(p.title)}</h3><p>${p.source?.attachments?.length ? p.source.attachments.length + " reference file(s) · saved on this device." : p.source?.provider ? "Inspired by a " + html(p.source.provider) + " link." : "Your own starter plan."}</p><button class="text-button" data-plan-open="${p.id}">Edit plan ↗</button><button class="text-button" data-plan-delete="${p.id}">Remove</button></article>`).join("")}</div>`
       : "");
 }
 function renderMap(results) {
@@ -421,7 +421,7 @@ function clearFilters(includeArea = true) {
     persistArea();
   }
   $("#search-query").value = "";
-  $("#caption-container").hidden = true;
+  $("#caption-container").hidden = !OH_UPLOAD_UI.count;
   $("#link-status").hidden = true;
 }
 function showView(view, scroll = true) {
@@ -450,7 +450,7 @@ function runQuery(query) {
   }
   state.view = parsed.view || "projects";
   $("#search-query").value = query;
-  $("#caption-container").hidden = true;
+  $("#caption-container").hidden = !OH_UPLOAD_UI.count;
   $("#link-status").hidden = true;
   $("#link-result").hidden = true;
   rememberSearch(query);
@@ -592,6 +592,7 @@ function renderDetail(slug) {
   } else openDialog();
 }
 function closeDetail(updateHash = true) {
+  OH_UPLOAD_UI.releaseDialog();
   if ($("#detail-dialog").open) $("#detail-dialog").close();
   if (updateHash && /^#(?:project|plan)\//.test(location.hash))
     history.replaceState(null, "", returnHash);
@@ -640,16 +641,17 @@ function renderInspiration(result, templateSlug = null) {
     description: "Description / caption",
     transcript: "Transcript text",
     manual: "Your description",
+    document: "Uploaded text file",
   };
   const evidenceTags = result.evidence
     .map(
       (e) =>
-        `<span>${html(kinds[e.kind] || e.kind)} · ${e.origin === "user-supplied" ? "supplied by you" : "retrieved"}</span>`,
+        `<span>${html(kinds[e.kind] || e.kind)} · ${e.origin === "user-upload" ? "from " + html(e.fileName || "your file") : e.origin === "user-supplied" ? "supplied by you" : "retrieved"}</span>`,
     )
     .join("");
   $("#link-result").hidden = false;
   $("#link-result").innerHTML =
-    `<div class="link-result-header"><div><p class="eyebrow">FROM YOUR INSPIRATION / ${html(result.provider.toUpperCase())}</p><h2 id="link-title">Give that idea a <em>starting point.</em></h2></div><button id="dismiss-inspiration" class="detail-close">Close ×</button></div><p class="link-disclosure">${html(result.disclosure)} ${result.transcriptStatus === "not-retrieved" ? "No transcript was retrieved; we have not watched or transcribed the video." : "Transcript text was supplied by you or an authorized service; exact results still need review."}</p><div class="evidence-tags">${evidenceTags || "<span>No accessible content yet</span>"}<span>${result.confidence === "title-only" ? "Title match only · check the fit" : result.matches.length ? "Suggested guide · confirm the fit" : "Project unresolved"}</span></div><details class="evidence-detail"><summary>See the source text and access notes</summary>${result.evidence.map((e) => `<p><strong>${html(kinds[e.kind])} · ${html(e.origin)}</strong><br />${html(e.text)}</p>`).join("")}${result.warnings.map((w) => `<p>${html(w)}</p>`).join("")}${external(result.sourceUrl, "Open original inspiration")}</details><div class="inspiration-layout"><div class="inspiration-editor"><label for="plan-template">Choose a starter guide (suggestions, not a video reconstruction)</label><select id="plan-template"><option value="">Start with your own notes</option>${data.projects.map((p) => `<option value="${p.slug}" ${p.slug === slug ? "selected" : ""}>${result.matches.some((m) => m.slug === p.slug) ? "Suggested: " : ""}${html(p.title)}</option>`).join("")}</select>${!result.matches.length ? '<p class="inspiration-empty">We couldn’t identify a hobby from the available text. Add a caption above and search again, or choose a guide yourself.</p>' : ""}<label for="plan-title">Your plan’s title</label><input id="plan-title" maxlength="200" value="${html(project?.title || "My inspiration plan")}" /><label for="plan-materials">Starter supply suggestions — edit to fit your project</label><textarea id="plan-materials" maxlength="12000">${html(project ? project.materials.map((m) => m.name + " — " + m.quantity).join("\n") : result.requirements.map((m) => [m.quantity, m.name].filter(Boolean).join(" ")).join("\n"))}</textarea><label for="plan-steps">Suggested first steps — check the original instructions</label><textarea id="plan-steps" maxlength="12000">${html(project ? project.steps.join("\n") : result.steps.map((s) => s.text).join("\n"))}</textarea><div class="inspiration-actions"><button id="save-plan" class="button">Save my edited plan +</button>${project ? `<a href="#project/${project.slug}" class="button secondary">Open full guide ↗</a>` : ""}</div><p class="small-note">Your edits and source notes save on this device. They do not turn inferred suggestions into extracted facts.</p></div><aside class="inspiration-aside"><h3>What the text actually says.</h3>${result.requirements.length ? `<ul class="extraction-list">${result.requirements.map((m) => `<li><strong>${html([m.quantity, m.name].filter(Boolean).join(" "))}</strong> · ${html(kinds[m.sourceKind] || "source text")}<br /><span class="small-note">“${html(m.evidence)}”</span></li>`).join("")}</ul>` : "<p>No exact supply requirements could be extracted. The editable supply list comes from a curated guide, if selected.</p>"}${result.steps.length ? `<p class="eyebrow">STEPS PRESENT IN THE TEXT</p><ol class="extraction-list">${result.steps.map((s) => `<li>${html(s.text)}</li>`).join("")}</ol>` : ""}${result.suggestions?.requirements?.length ? '<p class="eyebrow">INFERRED ADDITIONS · REVIEW BEFORE USING</p><ul class="extraction-list">' + result.suggestions.requirements.map((m) => "<li>" + html([m.quantity, m.name].filter(Boolean).join(" ")) + " — suggested, not extracted</li>").join("") + "</ul>" : ""}<h3>Put it on your map.</h3><p>Selected area: ${html(areaName())}. These are related resources, not confirmed stock or classes for this exact video.</p>${
+    `<div class="link-result-header"><div><p class="eyebrow">FROM YOUR INSPIRATION / ${result.provider === "uploads" ? "YOUR FILES" : html(result.provider.toUpperCase())}</p><h2 id="link-title">Give that idea a <em>starting point.</em></h2></div><button id="dismiss-inspiration" class="detail-close">Close ×</button></div><p class="link-disclosure">${html(result.disclosure)} ${result.provider === "uploads" ? "" : result.transcriptStatus === "not-retrieved" ? "No transcript was retrieved; we have not watched or transcribed the video." : "Transcript text was supplied by you or an authorized service; exact results still need review."}</p><div class="evidence-tags">${evidenceTags || "<span>No accessible content yet</span>"}<span>${result.confidence === "title-only" ? "Title match only · check the fit" : result.matches.length ? "Suggested guide · confirm the fit" : "Project unresolved"}</span></div>${result.attachments?.length ? '<div class="reference-block"><h3>Your reference files.</h3><div id="inspiration-file-gallery" class="reference-file-grid"></div></div>' : ""}<details class="evidence-detail"><summary>See the source text and access notes</summary>${result.evidence.map((e) => `<p><strong>${html(kinds[e.kind])} · ${html(e.origin)}</strong><br />${html(e.text)}</p>`).join("")}${result.warnings.map((w) => `<p>${html(w)}</p>`).join("")}${external(result.sourceUrl, "Open original inspiration")}</details><div class="inspiration-layout"><div class="inspiration-editor"><label for="plan-template">Choose a starter guide — check that it fits</label><select id="plan-template"><option value="">Start with your own notes</option>${data.projects.map((p) => `<option value="${p.slug}" ${p.slug === slug ? "selected" : ""}>${result.matches.some((m) => m.slug === p.slug) ? "Suggested: " : ""}${html(p.title)}</option>`).join("")}</select>${!result.matches.length ? '<p class="inspiration-empty">We couldn’t identify a hobby from the available text. Add a description above and search again, or choose a guide yourself.</p>' : ""}<label for="plan-title">Your plan’s title</label><input id="plan-title" maxlength="200" value="${html(project?.title || "My inspiration plan")}" /><label for="plan-materials">Starter supply suggestions — edit to fit your project</label><textarea id="plan-materials" maxlength="12000">${html(project ? project.materials.map((m) => m.name + " — " + m.quantity).join("\n") : result.requirements.map((m) => [m.quantity, m.name].filter(Boolean).join(" ")).join("\n"))}</textarea><label for="plan-steps">Suggested first steps — check the original instructions</label><textarea id="plan-steps" maxlength="12000">${html(project ? project.steps.join("\n") : result.steps.map((s) => s.text).join("\n"))}</textarea><div class="inspiration-actions"><button id="save-plan" class="button">Save my edited plan +</button>${project ? `<a href="#project/${project.slug}" class="button secondary">Open full guide ↗</a>` : ""}</div><p id="attachment-change-note" class="small-note attachment-change-note" hidden>Your reference files changed. Choose Find my thing again before saving this plan.</p><p class="small-note">Your edits, reference files and source notes save on this device. Suggested supplies remain suggestions.</p></div><aside class="inspiration-aside"><h3>What the text actually says.</h3>${result.requirements.length ? `<ul class="extraction-list">${result.requirements.map((m) => `<li><strong>${html([m.quantity, m.name].filter(Boolean).join(" "))}</strong> · ${html(kinds[m.sourceKind] || "source text")}<br /><span class="small-note">“${html(m.evidence)}”</span></li>`).join("")}</ul>` : "<p>No exact supply requirements could be extracted. The editable supply list comes from a curated guide, if selected.</p>"}${result.steps.length ? `<p class="eyebrow">STEPS PRESENT IN THE TEXT</p><ol class="extraction-list">${result.steps.map((s) => `<li>${html(s.text)}</li>`).join("")}</ol>` : ""}${result.suggestions?.requirements?.length ? '<p class="eyebrow">INFERRED ADDITIONS · REVIEW BEFORE USING</p><ul class="extraction-list">' + result.suggestions.requirements.map((m) => "<li>" + html([m.quantity, m.name].filter(Boolean).join(" ")) + " — suggested, not extracted</li>").join("") + "</ul>" : ""}<h3>Put it on your map.</h3><p>Selected area: ${html(areaName())}. These are related resources, not confirmed stock or classes for this exact project.</p>${
       project
         ? [
             ...discovery.relatedPlaces(project, state).local,
@@ -667,6 +669,7 @@ function renderInspiration(result, templateSlug = null) {
             .join("")
         : "<p>Choose a guide to connect your idea to local materials, learning and people.</p>"
     }</aside></div>`;
+  OH_UPLOAD_UI.decorate(result);
 }
 async function submitLink(raw) {
   if (linkBusy) return;
@@ -691,7 +694,7 @@ async function submitLink(raw) {
         /^http:\/\/(?:localhost|127\.0\.0\.1):\d+\/api\/ingest$/.test(endpoint))
         ? endpoint
         : "";
-    const result = await OH_INGESTION.ingest(
+    const linked = await OH_INGESTION.ingest(
       {
         url: raw,
         text: $("#caption-input").value,
@@ -699,6 +702,7 @@ async function submitLink(raw) {
       },
       { data, discovery, endpoint: safeEndpoint },
     );
+    const result = OH_UPLOAD_UI.augment(linked) || linked;
     renderInspiration(result);
     $("#link-status").textContent = result.matches.length
       ? "A related starter guide is ready. Review the source and confirm it fits."
@@ -719,7 +723,7 @@ function editorPlan(id) {
       ? plan.source.sourceUrl
       : "";
   $("#detail-root").innerHTML =
-    `<div class="detail-head"><span class="detail-brand">other hours.</span><button id="close-detail" class="detail-close">Close ×</button></div><div class="plan-editor"><p class="eyebrow">YOUR INSPIRATION PLAN · SAVED ON THIS DEVICE</p><h2 id="detail-title">Make it your own.</h2><div class="inspiration-editor"><label for="saved-plan-title">Title</label><input id="saved-plan-title" value="${html(plan.title)}" maxlength="200" /><label for="saved-plan-materials">Your supply list</label><textarea id="saved-plan-materials" maxlength="12000">${html(plan.materials)}</textarea><label for="saved-plan-steps">Your steps</label><textarea id="saved-plan-steps" maxlength="12000">${html(plan.steps)}</textarea><div class="inspiration-actions"><button class="button" id="update-plan" data-plan="${html(id)}">Save changes ✓</button><button class="button secondary" id="copy-plan" data-plan="${html(id)}">Copy plan ↗</button>${plan.projectSlug ? `<a class="button secondary" href="#project/${html(plan.projectSlug)}">Open related local guide ↗</a>` : ""}</div><p class="small-note">User-edited notes and editorial suggestions. ${plan.source?.transcriptStatus === "not-retrieved" ? "No transcript was retrieved." : "Review any source text and your own edits."}</p>${safeSource ? external(safeSource, "Original inspiration") : ""}<details class="evidence-detail"><summary>Preserved source notes</summary>${
+    `<div class="detail-head"><a class="detail-brand" href="#saved">other hours.</a><button id="close-detail" class="detail-close">Close ×</button></div><div class="plan-editor"><p class="eyebrow">YOUR INSPIRATION PLAN · SAVED ON THIS DEVICE</p><h2 id="detail-title">Make it your own.</h2><div class="inspiration-editor"><label for="saved-plan-title">Title</label><input id="saved-plan-title" value="${html(plan.title)}" maxlength="200" />${plan.source?.attachments?.length ? '<div class="reference-block"><h3>Saved reference files.</h3><div id="saved-reference-files" class="reference-file-grid"></div></div>' : ""}<label for="saved-plan-materials">Your supply list</label><textarea id="saved-plan-materials" maxlength="12000">${html(plan.materials)}</textarea><label for="saved-plan-steps">Your steps</label><textarea id="saved-plan-steps" maxlength="12000">${html(plan.steps)}</textarea><div class="inspiration-actions"><button class="button" id="update-plan" data-plan="${html(id)}">Save changes ✓</button><button class="button secondary" id="copy-plan" data-plan="${html(id)}">Copy plan ↗</button>${plan.projectSlug ? `<a class="button secondary" href="#project/${html(plan.projectSlug)}">Open related local guide ↗</a>` : ""}</div><p class="small-note">User-edited notes and editorial suggestions. ${plan.source?.provider === "uploads" ? "References stay on this device; matches use your notes or text files." : plan.source?.transcriptStatus === "not-retrieved" ? "No transcript was retrieved." : "Review any source text and your own edits."}</p>${safeSource ? external(safeSource, "Original inspiration") : ""}<details class="evidence-detail"><summary>Preserved source notes</summary>${
       (Array.isArray(plan.source?.evidence) ? plan.source.evidence : [])
         .slice(0, 12)
         .map(
@@ -729,6 +733,11 @@ function editorPlan(id) {
         .join("") || "<p>No source text was saved.</p>"
     }</details><div id="copy-fallback-root"></div></div></div>`;
   openDialog();
+  OH_UPLOAD_UI.references(
+    $("#saved-reference-files"),
+    plan.source?.attachments,
+  );
+  OH_UPLOAD_UI.cleanDetached();
 }
 function navigate() {
   const hash = location.hash;
@@ -874,7 +883,7 @@ $("#detail-dialog").addEventListener("change", (event) => {
   $("#material-count").textContent =
     `${project.materials.filter((m) => next.includes(m.legacyIndex)).length} / ${project.materials.length}`;
 });
-document.addEventListener("click", (event) => {
+document.addEventListener("click", async (event) => {
   const target = event.target.closest("button,a");
   if (!target) return;
   if (target.dataset.save) {
@@ -940,19 +949,41 @@ document.addEventListener("click", (event) => {
       source: currentInspiration,
       updatedAt: new Date().toISOString(),
     };
-    if (storage.set("oh:plans:v1", [plan, ...savedPlans()])) {
-      render();
-      notify("Your edited plan and source notes are saved.");
+    target.disabled = true;
+    let newFiles = [];
+    try {
+      newFiles = await OH_UPLOAD_UI.saveReferences(plan.source);
+      if (storage.set("oh:plans:v1", [plan, ...savedPlans()])) {
+        render();
+        notify(
+          plan.source?.attachments?.length
+            ? "Your plan and reference files are saved on this device."
+            : "Your edited plan and source notes are saved.",
+        );
+      } else if (newFiles.length) await OH_UPLOADS.deleteFiles(newFiles);
+    } catch (error) {
+      notify(error.message);
+    } finally {
+      target.disabled = false;
+      OH_UPLOAD_UI.updateResultState();
     }
   } else if (target.dataset.planOpen)
     location.hash = "#plan/" + target.dataset.planOpen;
   else if (target.dataset.planDelete) {
-    storage.set(
-      "oh:plans:v1",
-      savedPlans().filter((p) => p.id !== target.dataset.planDelete),
+    const removed = savedPlans().find(
+      (p) => p.id === target.dataset.planDelete,
     );
-    render();
-    notify("Plan removed from this device.");
+    const remaining = savedPlans().filter(
+      (p) => p.id !== target.dataset.planDelete,
+    );
+    if (storage.set("oh:plans:v1", remaining)) {
+      await OH_UPLOAD_UI.removeUnreferenced(
+        removed?.source?.attachments,
+        remaining,
+      );
+      render();
+      notify("Plan removed from this device.");
+    }
   } else if (target.id === "update-plan") {
     if (!$("#saved-plan-title").value.trim()) {
       $("#saved-plan-title").focus();
@@ -1014,6 +1045,7 @@ window.addEventListener("storage", () => {
   render();
   renderRecent();
 });
+OH_UPLOAD_UI.init();
 render();
 renderRecent();
 navigate();

@@ -8,6 +8,7 @@ Other Hours is an NYC-first, mobile-first hobby-to-real-life discovery website. 
 - `data.js`: versioned catalog with cities, hobbies, projects, materials, places, classes, communities and creators.
 - `discovery.js`: shared pure intent parsing, ranking, geographic filters and distance calculation.
 - `ingestion.js`: allowlisted platform URLs, official metadata, source-backed extraction and fallback.
+- `uploads.js`, `upload-ui.js`: local reference-file intake, native photo library picking, drop/paste and IndexedDB-backed plan attachments.
 - `app.js`: rendering, native project dialog, saved interests / plans, checklists and copy actions.
 - `config.js`: public optional service endpoint, never secrets.
 - `service/`: standalone, optional Node ingestion service. Pages must work without it.
@@ -21,6 +22,10 @@ Keep serif editorial hierarchy, warm paper, deliberate illustration treatments, 
 Never invent stock, quotes, event dates, enrollment, follower counts, official creator accounts, independence of ownership or platform transcripts. Cite real public URLs and record check dates and access restrictions. Price ranges and substitutes are editorial suggestions. An HTTP success alone does not prove inventory or a current class offering. Show organizational eligibility and tool training / membership restrictions.
 
 IDs and project slugs are foreign keys. Retain the original 33 guide slugs and `materials[].legacyIndex` positions so `oh:saved` and `oh:checked:<slug>` remain readable and rollback stays safe. Add explicit migrations if a future change genuinely requires them; do not clear local storage. Keep geography scoped by `cityId`. Sourced coordinate points are approximate address locations, not entrances or GPS observations.
+
+## Reference files
+
+Selected files stay in the browser. Preserve file-count/type/header/size checks, safe filename rendering and reference-aware deletion. Store Blobs in IndexedDB and descriptors in existing plan records; never put file bytes in localStorage or silently transmit them. Photos/PDFs/videos are references until a legitimate analysis integration exists. Text-file excerpts must retain their filename and provenance. A native photo picker must allow the library, without forcing camera capture.
 
 ## Inspiration policy
 

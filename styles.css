@@ -2856,3 +2856,247 @@ body:has(dialog[open]) {
     height: 240px;
   }
 }
+
+/* Reference intake: native photo/library picking, file dropping and local plan files. */
+.upload-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 4px 0 15px;
+}
+.upload-tools > span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.upload-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 44px;
+  padding: 9px 13px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-size: 12px;
+}
+.upload-button > span {
+  font-size: 18px;
+  line-height: 1;
+  color: var(--rust);
+}
+.upload-button:hover {
+  border-color: var(--rust);
+  background: var(--olive);
+}
+#search-form.is-dragging {
+  outline: 2px dashed var(--rust);
+  outline-offset: 8px;
+  background: var(--olive);
+}
+.upload-status {
+  border-left: 2px solid var(--rust);
+  padding: 9px 12px;
+  font-size: 12px;
+  background: var(--surface);
+  overflow-wrap: anywhere;
+}
+.upload-status.has-error {
+  color: var(--rust);
+}
+.upload-draft {
+  padding: 15px 0 4px;
+  border-top: 1px solid var(--line);
+}
+.upload-draft-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.upload-draft-heading > span {
+  font: 10px var(--mono);
+}
+.upload-draft-heading > button {
+  font-size: 11px;
+}
+.upload-draft > .small-note {
+  font-size: 11px;
+  margin: 11px 0;
+}
+.reference-file-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.reference-file {
+  position: relative;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.reference-file-picture {
+  height: 100px;
+  position: relative;
+  overflow: hidden;
+  background: var(--olive);
+  display: grid;
+  place-items: center;
+}
+.reference-file-picture img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+}
+.reference-file-placeholder {
+  font: italic 20px/1.15 var(--display);
+  text-align: center;
+  padding: 12px;
+  max-width: 160px;
+  color: var(--ink);
+}
+.reference-file-info {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+.reference-file-info > strong {
+  font-size: 12px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+.reference-file-info > small {
+  font-size: 11px;
+  color: var(--muted);
+}
+.reference-file-open {
+  margin-top: auto;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.reference-file-open a {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.reference-file-remove {
+  position: absolute;
+  z-index: 1;
+  top: 3px;
+  right: 3px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  background: var(--surface);
+  font-size: 22px;
+}
+.reference-file-remove:hover {
+  background: var(--butter);
+}
+.reference-block {
+  margin: 22px 0;
+}
+.reference-block > h3 {
+  font: 28px/1.2 var(--display);
+  margin: 0 0 13px;
+}
+.reference-block > .reference-file-grid {
+  max-width: 690px;
+}
+.attachment-change-note {
+  padding: 10px 12px;
+  border-left: 2px solid var(--rust);
+  background: var(--paper);
+  color: var(--rust);
+}
+.inspiration-editor .reference-file-open a {
+  font: 11px var(--body);
+}
+@media (max-width: 800px) {
+  .reference-file-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .upload-tools {
+    gap: 8px;
+  }
+  .upload-tools > span {
+    width: 100%;
+    font-size: 11px;
+  }
+  .reference-file-picture {
+    height: 90px;
+  }
+}
+@media (max-width: 560px) {
+  .upload-tools {
+    margin: 4px 0 17px;
+  }
+  .upload-button {
+    font-size: 12px;
+    min-height: 44px;
+    padding: 9px 12px;
+    gap: 14px;
+  }
+  .upload-tools > span {
+    width: auto;
+    font-size: 11px;
+    max-width: 100%;
+    line-height: 1.5;
+  }
+  .upload-draft > .small-note {
+    font-size: 11px;
+  }
+  .reference-file-grid {
+    gap: 10px;
+  }
+  .reference-file-remove {
+    width: 40px;
+    height: 40px;
+  }
+  .reference-block > .reference-file-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .reference-file-info > strong {
+    font-size: 12px;
+  }
+  .reference-file-open a {
+    min-height: 36px;
+  }
+  .reference-file-placeholder {
+    font-size: 19px;
+  }
+  .reference-file-info > small {
+    font-size: 11px;
+  }
+}
+@media (max-width: 365px) {
+  .upload-tools > span {
+    width: 100%;
+  }
+}
+#search-form.is-dragging .small-note,
+#search-form.is-dragging .search-help,
+#search-form.is-dragging .upload-tools > span {
+  color: var(--ink);
+}
+@media (max-width: 560px) {
+  #search-query,
+  #caption-input,
+  #text-kind,
+  .inspiration-editor input,
+  .inspiration-editor textarea,
+  .inspiration-editor select {
+    font-size: 16px;
+  }
+}

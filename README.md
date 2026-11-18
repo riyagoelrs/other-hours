@@ -22,6 +22,7 @@ For the repeatable desktop / mobile journeys, install Python Playwright in your 
 ## Product behavior
 
 - One search accepts an interest, a beginner question, budget / neighborhood constraints, or an HTTPS YouTube, TikTok, Instagram or Pinterest content link.
+- **Add photos / Add files** opens the native device picker (including the photo library). Drag files or a link into the same search area, or paste an image from the clipboard. Files can be kept with an editable inspiration plan.
 - A synonym-based intent engine ranks specific project terms, then related interests and selected-area resources. It is deterministic, not an AI chatbot.
 - A map / list toggle uses 21 sourced address points, with nearby results measured from a chosen place, not the user’s GPS. Map tiles load from OpenStreetMap only when the map is selected. Unmapped places retain their address and external map links.
 - Borough and neighborhood choices persist locally. Location is optional and never requires GPS. Interest, beginner, budget, free-start and reuse refinements do not require retyping a query.
@@ -32,22 +33,35 @@ For the repeatable desktop / mobile journeys, install Python Playwright in your 
 
 ## Data and architecture
 
-| File                       | Responsibility                                                                                                            |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `index.html`, `styles.css` | Accessible page structure, editorial visual system and responsive layouts                                                 |
-| `data.js`                  | Versioned catalog: cities, interests, projects, structured supplies, estimates, places, classes, communities and creators |
-| `discovery.js`             | Shared pure intent parsing, ranking, filters and geographic matching                                                      |
-| `ingestion.js`             | Platform validation, permitted public metadata, source-backed text extraction, structured results and static fallback     |
-| `app.js`                   | Rendering, native dialog, refinement, persistence, editable inspiration plans and copy / share actions                    |
-| `config.js`                | Public endpoint configuration only; never secrets                                                                         |
-| `service/`                 | Optional standalone Node ingestion service; deployment-independent                                                        |
-| `scripts/`                 | Content integrity, regression tests, browser journeys and static packaging                                                |
+| File                         | Responsibility                                                                                                            |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `index.html`, `styles.css`   | Accessible page structure, editorial visual system and responsive layouts                                                 |
+| `data.js`                    | Versioned catalog: cities, interests, projects, structured supplies, estimates, places, classes, communities and creators |
+| `discovery.js`               | Shared pure intent parsing, ranking, filters and geographic matching                                                      |
+| `ingestion.js`               | Platform validation, permitted public metadata, source-backed text extraction, structured results and static fallback     |
+| `uploads.js`, `upload-ui.js` | File checks, native picking/drop/paste, previews and reference-aware IndexedDB persistence                                |
+| `app.js`                     | Rendering, native dialog, refinement, persistence, editable inspiration plans and copy / share actions                    |
+| `config.js`                  | Public endpoint configuration only; never secrets                                                                         |
+| `service/`                   | Optional standalone Node ingestion service; deployment-independent                                                        |
+| `scripts/`                   | Content integrity, regression tests, browser journeys and static packaging                                                |
 
 Catalog IDs and project slugs are stable foreign keys. `projects[].materials[].legacyIndex` retains the old `oh:checked:<slug>` positions; bookmarks still use `oh:saved`. No destructive migration or storage reset runs. Additional preferences and plans have versioned keys. Storage errors and malformed data have usable fallbacks.
 
 Geographic records carry a `cityId`, boroughs and neighborhoods rather than free-text matching alone. `OH_DISCOVERY.create(catalog, cityId)` scopes the shared engine to a city. Another city can add its own geographic record and linked listings without a new page architecture; the shipped city picker intentionally exposes only researched NYC content.
 
 Facts carry public source URLs and check dates. Editorial guides, substitutes and price estimates have separate provenance. Source accessibility is not proof of current stock, enrollment, ownership or every program’s beginner suitability. [Source checks](docs/source-checks.json) and [NYC geocoding evidence](docs/geocoding-sources.json) preserve the HTTP outcomes; Queens Public Library restricted automated access and is marked accordingly.
+
+## Photos and files
+
+Choose **Add photos** for the device photo library or **Add files** for photos, PDFs, text/Markdown notes and MP4/MOV/WebM videos. Up to six files can be combined with a link or a typed idea. JPEG, PNG, WebP, GIF, AVIF and HEIC/HEIF are supported as photo references; HEIC preview depends on the browser, while the original is retained. Native JPEG exports that keep a HEIC filename are handled as JPEG. No `capture` attribute forces the camera instead of the library.
+
+Photos and PDFs can be up to 20 MB each, videos 50 MB and text 1 MB, with a 100 MB combined limit. Unsupported formats, empty files, mismatched headers, duplicates and oversized selections receive a visible error. Filenames and document text are escaped when rendered.
+
+**Files stay on the device.** Saving a plan stores originals as Blobs in IndexedDB and keeps only their descriptors with the plan in localStorage. Reopening the saved plan shows its references and offers the original downloads. Deleting a plan removes file records only when another saved plan does not reference them. Failed storage does not report a successful save. This is browser-local file intake, not a server upload or cloud library; it also does not send pictures to the assistant chat.
+
+Photo/PDF/video contents are not analyzed visually or transcribed. Add a description to match a guide, or select one yourself. Plain-text files contribute literal source text, quantities and steps, labeled with their filename; the first 16,000 characters per text file are used for matching, and the complete original is kept. No image filename is treated as evidence of a project. Automatic vision, OCR, PDF extraction and cloud syncing would be separate integrations.
+
+[Upload verification and screenshots](docs/uploads.md) covers native picking, dropping, persistence, removal, limits and privacy.
 
 ## Inspiration links: exactly what works
 

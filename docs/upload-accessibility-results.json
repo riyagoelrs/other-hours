@@ -1,0 +1,32 @@
+[
+  {
+    "width": 1440,
+    "state": "home",
+    "violations": []
+  },
+  {
+    "width": 1440,
+    "state": "references",
+    "violations": []
+  },
+  {
+    "width": 1440,
+    "state": "saved-reference-plan",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "state": "home",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "state": "references",
+    "violations": []
+  },
+  {
+    "width": 390,
+    "state": "saved-reference-plan",
+    "violations": []
+  }
+]
