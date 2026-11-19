@@ -1,6 +1,7 @@
 // A reviewable Pages package, excluding service code, tests and secrets.
 import fs from "node:fs";
 const out = "work/pages";
+fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(out, { recursive: true });
 for (const file of [
   "index.html",

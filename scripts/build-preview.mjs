@@ -53,10 +53,6 @@ let app = fs
   .replaceAll(
     'src="./assets/illustrations/${artFor(p)}.svg"',
     'src="${OH_PREVIEW_ASSETS[artFor(p)]}"',
-  )
-  .replaceAll(
-    "`./assets/illustrations/${c.art}.svg`",
-    "OH_PREVIEW_ASSETS[c.art]",
   );
 for (const [file, url] of Object.entries(photos))
   app = app.replaceAll(file, url);

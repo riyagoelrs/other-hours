@@ -73,9 +73,9 @@ The [optional service](service/README.md) improves browser-restricted metadata a
 
 ## Design and review
 
-The current [hobby club journal direction](docs/scrapbook-design.md) combines a newspaper masthead, handwritten notes, blush paper, yellow plaid and taped photo prints, following the written newspapers/journals/Clueless/Mean Girls reference. The original guide illustrations remain, with complementary pastel backgrounds. Five self-hosted Pexels photographs retain [source and license records](assets/photos/README.md); the pictures are mood imagery, independent of the NYC directory. All four self-hosted typeface families retain their OFL licenses.
+The current [simpler design](docs/simple-design.md) returns to the original headline and compact identity: warm paper, dark ink, one rust accent, a single project photograph beside the search and a text-led hobby index. Typography and contrast draw on the supplied HUMAN.md reference. The decorative scrapbook styling was removed. Two self-hosted Pexels photographs retain [source and license records](assets/photos/README.md); the pictures are independent of the NYC directory. The three self-hosted typeface families retain their OFL licenses.
 
-The supplied Pinterest board returned HTTP 403, so its pins could not be inspected. This refinement follows the user's written references rather than claiming to reproduce those pins. The [earlier design review](docs/design-review.md) and [screenshots](docs/screenshots) document the preceding field-guide layout; new browser screenshots could not be captured in the current managed environment.
+The supplied HUMAN.md page and stylesheet were inspected. The X post's official public embed describes a loader experiment; its animation could not be viewed. The earlier Pinterest board returned HTTP 403. The [earlier design review](docs/design-review.md), [scrapbook pass](docs/scrapbook-design.md) and [screenshots](docs/screenshots) are historical. The supported managed browser tool remains unavailable, so the current layout has static/build checks but no new browser captures or accessibility scan.
 
 ## GitHub Pages, review and rollback
 

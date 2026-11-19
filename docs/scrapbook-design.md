@@ -1,5 +1,7 @@
 # Other Hours: the hobby club journal
 
+Historical design pass, superseded by the [simpler original direction](simple-design.md) after user feedback. The photos and handwriting font mentioned below were removed when no longer used. The checks here document this earlier state.
+
 The user's written references were newspapers, journals, girls enjoying hobbies together, _Clueless_ and _Mean Girls_. This pass interprets those as a fashion scrapbook: a large newspaper masthead, warm paper, blush pink and berry ink, a little yellow plaid, handwritten margin notes and taped photo prints. It uses original layouts and licensed activity photography; no film stills, characters or uninspected Pinterest pins are represented as source material.
 
 The hero reads “Find your next little obsession.” Search, photo/file intake and idea shortcuts stay together in the first column. The opposite column is a ruled-paper collage of women making art, a scrapbook page, a newspaper clipping, a yellow plaid reminder and a small drawn bow. The two photo prints link to real classes/communities and the journal guide. On narrow screens the search comes first, followed by the collage; collage elements stay inside their own grid and do not cover form controls.

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#f6d5df" />
+    <meta name="theme-color" content="#f4efe8" />
     <meta
       name="description"
       content="A field guide to your free time. Discover hobbies, reuse materials, classes and creative people across New York City."
@@ -38,10 +38,6 @@
   <body>
     <a class="skip-link" href="#discovery">Skip to discovery</a>
     <div id="site-shell">
-      <div class="edition-bar">
-        <span>A LITTLE CURIOUS. VERY INTO IT.</span
-        ><span>THE NEW YORK CITY HOBBY CLUB JOURNAL</span>
-      </div>
       <header class="site-header wrap">
         <a class="brand" href="#home" aria-label="Other Hours home"
           ><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
@@ -57,56 +53,28 @@
             </g></svg
           >other hours<span class="brand-dot">.</span></a
         >
-        <p class="masthead-note">For the plot.<br />For the love of it.</p>
+        <nav class="main-nav" aria-label="Main navigation">
+          <div class="nav-inner">
+            <a href="#explore" data-view="projects">Hobbies</a>
+            <a href="#materials" data-view="materials">Materials</a>
+            <a href="#community" data-view="community">Classes</a>
+            <a href="#people" data-view="people">People</a>
+          </div>
+        </nav>
         <a class="saved-link" href="#saved"
           >Saved <span id="saved-count">0</span
           ><svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M6 4h12v16l-6-4-6 4z" /></svg
         ></a>
       </header>
-      <nav class="main-nav" aria-label="Main navigation">
-        <div class="wrap nav-inner">
-          <a href="#explore" data-view="projects">The hobby edit</a>
-          <a href="#materials" data-view="materials"
-            >Supplies &amp; little finds</a
-          >
-          <a href="#community" data-view="community">Find your people</a>
-          <a href="#people" data-view="people">Meet the makers</a>
-        </div>
-      </nav>
       <main>
-        <section class="location-strip wrap" aria-label="Choose your area">
-          <div>
-            <span class="location-dot" aria-hidden="true"></span
-            ><span>Currently exploring:</span>
-            <label class="sr-only" for="city-select">City</label
-            ><select id="city-select">
-              <option value="nyc">New York City</option></select
-            ><span class="city-note"
-              >— all five boroughs. More cities coming.</span
-            >
-          </div>
-          <div class="area-controls">
-            <label class="sr-only" for="borough-select">Borough</label
-            ><select id="borough-select">
-              <option value="">All boroughs</option></select
-            ><label class="sr-only" for="neighborhood-select"
-              >Neighborhood</label
-            ><select id="neighborhood-select">
-              <option value="">All neighborhoods</option>
-            </select>
-          </div>
-        </section>
         <section class="hero wrap" id="home">
           <div class="hero-copy">
-            <p class="eyebrow">
-              <span class="issue-number">THE OFFLINE EDITION</span> YOUR FREE
-              TIME, WITH A LITTLE MORE FEELING
-            </p>
-            <h1>Find your next<br /><em>little obsession.</em></h1>
+            <p class="eyebrow">FOR ALL YOUR OTHER INTERESTS / NEW YORK CITY</p>
+            <h1>Make something<br />of your <em>free time.</em></h1>
             <p class="hero-sub">
-              For your “I’ve always wanted to try that” era. Find the supplies,
-              places and people to make it happen.
+              That thing you saw online? Go make it. Find the materials, places
+              and people to get started.
             </p>
             <form id="search-form" role="search">
               <label for="search-query" class="sr-only"
@@ -128,7 +96,7 @@
                 </button>
               </div>
               <p class="search-help">
-                A passing thought, a saved TikTok, a whole new personality.
+                Search an idea, paste a link, or add your own reference files.
               </p>
               <div class="upload-tools" aria-label="Add inspiration files">
                 <button type="button" id="add-photos" class="upload-button">
@@ -207,7 +175,7 @@
               <p id="link-status" role="status" hidden></p>
             </form>
             <div class="try-searches">
-              <span>TRY A LITTLE</span
+              <span>Or try</span
               ><button data-example="Make a leather journal">Bookbinding</button
               ><button data-example="Creative hobbies under $30">
                 Under $30</button
@@ -219,81 +187,28 @@
             </div>
             <div id="recent-searches" class="recent-searches" hidden></div>
           </div>
-          <div
-            class="hero-scrapbook"
-            aria-label="A little inspiration for your offline era"
+          <a
+            class="hero-feature"
+            href="#project/beaded-charm"
+            aria-label="Open the beaded charm guide"
           >
-            <div class="newspaper-clipping" aria-hidden="true">
-              <p>THE OTHER HOURS JOURNAL</p>
-              <h2>The joy of being<br /><em>a beginner.</em></h2>
-              <div>
-                A few free hours. A little curiosity. Something made by you. No
-                need to be good at it yet. There is a whole city of things to
-                try.
-              </div>
-            </div>
-            <p class="scrap-annotation" aria-hidden="true">
-              Your offline era<br />looks good on you.
-            </p>
-            <a
-              class="scrap-photo scrap-photo-main"
-              href="#community"
-              aria-label="Explore classes and communities"
-            >
+            <div class="feature-image">
               <img
-                src="./assets/photos/hobby-club.webp"
-                alt="Four women sitting together on the floor, painting and drawing"
-                width="1000"
-                height="1500"
+                src="./assets/photos/beadwork.webp"
+                alt="Hands threading beads at a worktable"
+                width="700"
+                height="1050"
                 fetchpriority="high"
               />
-              <span>good company, messy hands.</span>
-            </a>
-            <p class="scrap-sticky" aria-hidden="true">
-              <span>a reminder</span>You’re allowed<br />to do things<br /><em
-                >just for fun.</em
-              ><b>♡</b>
-            </p>
-            <a
-              class="scrap-photo scrap-photo-journal"
-              href="#project/leather-journal"
-              aria-label="Make a journal of your own"
-            >
-              <img
-                src="./assets/photos/scrapbook.webp"
-                alt="A journal page layered with paper clippings, handwriting and a butterfly"
-                width="700"
-                height="478"
-              />
-              <span>a page of your own.</span>
-            </a>
-            <svg
-              class="scrap-bow"
-              viewBox="0 0 120 100"
-              fill="none"
-              aria-hidden="true"
-            >
-              <g
-                stroke="currentColor"
-                stroke-width="3"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path
-                  d="M58 44C26 10 4 13 14 34c7 16 29 16 44 10Zm2 1c18-37 53-44 48-19-3 17-30 25-48 19Z"
-                />
-                <path
-                  d="M58 45c-9 21-24 27-31 40l14-3 2 11c8-13 15-29 17-47m1-1c0 21 17 37 29 46l-2-14 13 1C84 67 75 60 63 45"
-                />
-                <ellipse cx="60" cy="44" rx="6" ry="7" />
-              </g>
-            </svg>
-          </div>
+            </div>
+            <div class="feature-caption">
+              <span>BEADWORK</span><span>Bead a charm for everything.</span>
+            </div>
+          </a>
         </section>
         <section class="collections wrap" aria-labelledby="collections-title">
           <div class="section-label">
-            <h2 id="collections-title">CURRENTLY CRUSHING ON</h2>
-            <span>A LITTLE SOMETHING FOR EVERY VERSION OF YOU</span>
+            <h2 id="collections-title">BROWSE BY INTEREST</h2>
           </div>
           <div class="collection-grid" id="collection-grid"></div>
         </section>
@@ -310,13 +225,34 @@
         >
           <div class="section-heading">
             <div>
-              <p class="eyebrow" id="results-kicker">
-                GOOD THINGS TO SPEND AN AFTERNOON ON
-              </p>
-              <h2 id="results-title">A good place to <em>begin.</em></h2>
+              <p class="eyebrow" id="results-kicker">THE NYC HOBBY INDEX</p>
+              <h2 id="results-title">What are you <em>into?</em></h2>
             </div>
-            <p id="results-context">Small starts. Real places. Your city.</p>
+            <p id="results-context">
+              Starter guides, with materials and local resources.
+            </p>
           </div>
+          <section class="location-strip" aria-label="Choose your area">
+            <div>
+              <span>Explore in</span>
+              <label class="sr-only" for="city-select">City</label
+              ><select id="city-select">
+                <option value="nyc">New York City</option></select
+              ><span class="city-note"
+                >— all five boroughs. More cities coming.</span
+              >
+            </div>
+            <div class="area-controls">
+              <label class="sr-only" for="borough-select">Borough</label
+              ><select id="borough-select">
+                <option value="">All boroughs</option></select
+              ><label class="sr-only" for="neighborhood-select"
+                >Neighborhood</label
+              ><select id="neighborhood-select">
+                <option value="">All neighborhoods</option>
+              </select>
+            </div>
+          </section>
           <div class="result-tabs" aria-label="Discovery results">
             <button data-result-view="projects">
               Projects <span id="projects-count"></span></button
@@ -434,12 +370,12 @@
               width="1000"
               height="667"
               loading="lazy"
-            /><span>one girl’s scraps,<br />your next obsession.</span>
+            />
           </div>
           <div class="reuse-copy">
             <p class="eyebrow">BEFORE YOU BUY SOMETHING NEW</p>
             <h2 id="reuse-title">
-              The best supply might<br />already <em>exist.</em>
+              Start with what<br /><em>you already have.</em>
             </h2>
             <p>
               A fabric offcut. A borrowed tool. Someone else’s unfinished idea.
@@ -448,10 +384,6 @@
             <button class="text-button" id="browse-reuse">
               Explore materials &amp; reuse
             </button>
-            <div class="reuse-footnote">
-              <span>REUSE A LITTLE</span><span>BORROW A LITTLE</span
-              ><span>MAKE IT YOURS</span>
-            </div>
           </div>
         </section>
         <section
@@ -461,7 +393,7 @@
           <div class="section-heading">
             <div>
               <p class="eyebrow">YOUR NEXT THING, A LITTLE CLOSER</p>
-              <h2 id="neighborhoods-title">Around the <em>corner.</em></h2>
+              <h2 id="neighborhoods-title">Find something <em>nearby.</em></h2>
             </div>
             <span class="small-note"
               >Explore without sharing your precise location.</span
@@ -470,7 +402,7 @@
           <div class="neighborhood-grid">
             <button data-area="Garment District">
               <span>MANHATTAN</span>
-              <h3>A thread to follow.</h3>
+              <h3>Garment District</h3>
               <p>
                 Fabric, sewing resources &amp; shared spaces<br />in the Garment
                 District.
@@ -478,14 +410,14 @@
               <b>Explore the Garment District</b></button
             ><button data-area="Greenpoint">
               <span>BROOKLYN</span>
-              <h3>Make an afternoon of it.</h3>
+              <h3>Greenpoint</h3>
               <p>
                 Yarn, needlework &amp; creative workshops<br />in Greenpoint.
               </p>
               <b>Explore Greenpoint</b></button
             ><button data-area="Queens">
               <span>QUEENS</span>
-              <h3>A new way to notice.</h3>
+              <h3>Queens</h3>
               <p>
                 Garden programs, birding resources<br />&amp; public library
                 communities.
@@ -517,34 +449,10 @@
               <ul>
                 <li>
                   <a
-                    href="https://www.pexels.com/photo/8107701/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >Hobby club: Kaboompics</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="https://www.pexels.com/photo/16824669/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >Scrapbook: stayhereforu</a
-                  >
-                </li>
-                <li>
-                  <a
                     href="https://www.pexels.com/photo/7585691/"
                     target="_blank"
                     rel="noopener noreferrer"
                     >Beadwork: Miriam Alonso</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="https://www.pexels.com/photo/5409706/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >Flowers: Amina Filkins</a
                   >
                 </li>
                 <li>

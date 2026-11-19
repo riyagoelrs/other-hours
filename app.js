@@ -186,9 +186,9 @@ function artFor(project) {
   if (/dance|bird|chess|writing/.test(project.visual)) return project.visual;
   return "print";
 }
-function projectCard({ item: p, localCount }, index) {
+function projectCard({ item: p, localCount }) {
   const saved = savedProjects().includes(p.slug);
-  return `<article class="project-card"><a class="project-picture" href="#project/${p.slug}" aria-label="Open ${html(p.title)}"><img src="./assets/illustrations/${artFor(p)}.svg" alt="" width="400" height="380" ${index > 3 ? 'loading="lazy"' : ""} /><span class="project-number">A LITTLE HOW-TO</span></a><button class="bookmark" data-save="${p.slug}" aria-label="${saved ? "Unsave" : "Save"} ${html(p.title)}" aria-pressed="${saved}">${bookmarkIcon}</button><div class="card-info"><span class="card-category">${html(data.hobbies[p.hobbyIds[0]].name)}</span><h3><a href="#project/${p.slug}">${html(p.title)}</a></h3><div class="card-meta"><span>${html(p.time)}</span><span>${p.budgetStatus === "provider-quote-required" ? "CHECK WORKSHOP FEE" : p.budgetMin === 0 ? "FREE START POSSIBLE" : "$" + p.budgetMin + "–" + p.budgetMax + " EST."}</span></div><p class="card-area"><span class="mini-dot" aria-hidden="true"></span>${state.borough || state.neighborhood ? (localCount ? `${localCount} resource${localCount === 1 ? "" : "s"} in ${html(areaName())}` : "Start anywhere · NYC resources") : p.reuseAvailable ? "Reuse / borrow a little. Make a lot." : "Start with a beginner workshop."}</p></div></article>`;
+  return `<article class="project-card"><button class="bookmark" data-save="${p.slug}" aria-label="${saved ? "Unsave" : "Save"} ${html(p.title)}" aria-pressed="${saved}">${bookmarkIcon}</button><div class="card-info"><span class="card-category">${html(data.hobbies[p.hobbyIds[0]].name)}</span><h3><a href="#project/${p.slug}">${html(p.title)}</a></h3><div class="card-meta"><span>${html(p.time)}</span><span>${p.budgetStatus === "provider-quote-required" ? "Check workshop fee" : p.budgetMin === 0 ? "Free start possible" : "$" + p.budgetMin + "–" + p.budgetMax + " est."}</span></div><p class="card-area">${state.borough || state.neighborhood ? (localCount ? `${localCount} resource${localCount === 1 ? "" : "s"} in ${html(areaName())}` : "Start anywhere · NYC resources") : p.reuseAvailable ? "Reuse and borrowing options" : "Start with a beginner workshop"}</p></div></article>`;
 }
 const placeTypes = {
   reuse: "SECONDHAND & REUSE",
@@ -302,24 +302,22 @@ function render() {
   const results = discovery.search(state.view, state.query, state, saved);
   const title =
     state.view === "saved"
-      ? "Good things, <em>kept.</em>"
+      ? "Your <em>saved things.</em>"
       : state.query
-        ? "Follow that <em>curiosity.</em>"
+        ? "Search <em>results.</em>"
         : state.view === "materials"
-          ? "Materials with a <em>past.</em>"
+          ? "Materials &amp; <em>reuse.</em>"
           : state.view === "community"
-            ? "Find your kind of <em>people.</em>"
+            ? "Classes &amp; <em>communities.</em>"
             : state.view === "people"
-              ? "Learn from the <em>makers.</em>"
-              : "A good place to <em>begin.</em>";
+              ? "People &amp; <em>creators.</em>"
+              : "What are you <em>into?</em>";
   $("#results-title").innerHTML = title;
   $("#results-kicker").textContent =
-    state.view === "saved"
-      ? "YOUR PERSONAL FIELD NOTES · ON THIS DEVICE"
-      : "GOOD THINGS TO SPEND AN AFTERNOON ON";
+    state.view === "saved" ? "SAVED ON THIS DEVICE" : "THE NYC HOBBY INDEX";
   $("#results-context").textContent =
     state.view === "projects"
-      ? "Small starts. Real places. Your city."
+      ? "Starter guides, with materials and local resources."
       : state.view === "materials"
         ? "Reuse first. Check access before you go."
         : state.view === "people"
@@ -772,18 +770,10 @@ $("#borough-select").innerHTML += Object.entries(data.cities.nyc.boroughs)
 $("#category-select").innerHTML += data.categories
   .map((c) => `<option value="${c.id}">${html(c.name)}</option>`)
   .join("");
-const collectionPhotos = {
-  making: "./assets/photos/beadwork.webp",
-  art: "./assets/photos/scrapbook.webp",
-  nature: "./assets/photos/flowers.webp",
-};
-function collectionImage(c) {
-  return collectionPhotos[c.id] || `./assets/illustrations/${c.art}.svg`;
-}
 $("#collection-grid").innerHTML = data.categories
   .map(
     (c) =>
-      `<button class="collection" data-category="${c.id}" aria-pressed="false"><div class="collection-image"><img src="${collectionImage(c)}" alt="" width="400" height="380" loading="lazy" /></div><div class="collection-bottom"><h3>${html(c.short)}</h3></div><p>${html(c.name)}</p></button>`,
+      `<button class="collection" data-category="${c.id}" aria-pressed="false"><span class="collection-name">${html(c.short)}</span><span class="collection-description">${html(c.name)}</span></button>`,
   )
   .join("");
 $("#search-form").addEventListener("submit", (event) => {
@@ -850,7 +840,7 @@ $("#load-more").addEventListener("click", () => {
   state.limit += 12;
   render();
   const firstNew = document.querySelectorAll(
-    "#project-grid .project-picture, #places-grid .card-actions a, #community-grid .card-actions a, #creator-grid .creator-top + p + p + .profile-projects + a",
+    "#project-grid .project-card h3 a, #places-grid .card-actions a, #community-grid .card-actions a, #creator-grid .creator-top + p + p + .profile-projects + a",
   )[previous];
   firstNew?.focus({ preventScroll: true });
 });

@@ -15,7 +15,7 @@ Other Hours is an NYC-first, mobile-first hobby-to-real-life discovery website. 
 
 ## Design and accessibility
 
-Keep the hobby-club journal direction: a newspaper serif masthead, warm paper, blush/berry accents, handwritten Caveat notes, taped photo prints and restrained yellow plaid. Existing guide illustrations use complementary pastel papers. Keep licensed photo provenance in `assets/photos/README.md`; mood photography must not imply a pictured venue or person is a catalog listing. Avoid stock AI imagery, generic gradients and fake metrics. Preserve labels, keyboard operation, native dialog behavior, reduced-motion support and mobile layouts. Prefer well-researched useful content to bulk listings.
+Keep the simpler original direction: a compact header, Instrument Serif headlines, warm paper, dark ink and a restrained rust accent. Search and uploads come first; hobbies form a text-led index. Use a small amount of activity photography with real provenance in `assets/photos/README.md`. Do not add decorative tape, handwriting, collage layers, repeated card frames or themed slogans. Mood photography must not imply a pictured venue or person is a catalog listing. Avoid stock AI imagery, generic gradients and fake metrics. Preserve labels, keyboard operation, native dialog behavior, reduced-motion support and mobile layouts. Prefer useful content to bulk listings.
 
 ## Data integrity
 

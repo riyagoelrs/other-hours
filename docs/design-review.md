@@ -1,6 +1,6 @@
 # Other Hours: before-and-after design review
 
-This document records the earlier field-guide redesign. The subsequent [hobby club journal refinement](scrapbook-design.md) describes the current palette, photography, typography and verification limits. Screenshots below predate that visual refinement.
+This document records the earlier field-guide redesign. The [simpler design refinement](simple-design.md) describes the current layout and verification limits. Screenshots below predate both that refinement and the intervening scrapbook pass.
 
 ## Audit before implementation
 

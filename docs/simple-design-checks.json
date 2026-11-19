@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-19",
+  "checks": [
+    "npm run check passed",
+    "31 Node tests passed",
+    "build:pages passed",
+    "build:preview passed; emitted script validated",
+    "Prettier parsed and formatted CSS/HTML",
+    "Unique HTML IDs, local assets and guide links valid",
+    "Generated package contains no removed font/photos",
+    "Self-contained assets embedded"
+  ],
+  "contrast": [
+    {
+      "text": "#201e1f",
+      "surface": "#f4efe8",
+      "ratio": 14.49
+    },
+    {
+      "text": "#68635e",
+      "surface": "#f4efe8",
+      "ratio": 5.19
+    },
+    {
+      "text": "#a73f29",
+      "surface": "#f4efe8",
+      "ratio": 5.42
+    },
+    {
+      "text": "#faf7f2",
+      "surface": "#201e1f",
+      "ratio": 15.51
+    }
+  ],
+  "previewBytes": 991703,
+  "browserQA": "unverified: supported managed browser route unavailable; prior screenshots are historical"
+}
