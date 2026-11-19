@@ -10,7 +10,9 @@ const OH_INGESTION = (() => {
   function identify(raw) {
     let url;
     try {
-      url = new URL(raw.trim());
+      url = new URL(
+        raw.trim().startsWith("www.") ? "https://" + raw.trim() : raw.trim(),
+      );
     } catch {
       return null;
     }
@@ -187,9 +189,13 @@ const OH_INGESTION = (() => {
       confidence: !matches.length
         ? "unresolved"
         : evidence.some((e) =>
-              ["transcript", "description", "manual", "document"].includes(
-                e.kind,
-              ),
+              [
+                "transcript",
+                "description",
+                "manual",
+                "document",
+                "ocr",
+              ].includes(e.kind),
             )
           ? "suggested-match"
           : "title-only",
@@ -230,10 +236,26 @@ const OH_INGESTION = (() => {
           origin: "user-upload",
           fileName: file.name,
         });
+    for (const file of attachments)
+      if (
+        file.kind === "image" &&
+        typeof file.ocrText === "string" &&
+        file.ocrText.trim()
+      )
+        evidence.push({
+          kind: "ocr",
+          text: file.ocrText.trim().slice(0, 16000),
+          origin: "on-device-ocr",
+          fileName: file.name,
+        });
     const warnings = baseResult ? [...baseResult.warnings] : [];
+    if (attachments.some((file) => file.ocrText))
+      warnings.push(
+        "Screenshot text was recognized on this device and may contain errors. Review the text and any quantities before using it.",
+      );
     if (attachments.some((f) => f.kind !== "text"))
       warnings.push(
-        "Photos, PDFs and videos are reference files. Project matches use your description or an uploaded text file; visual contents have not been analyzed.",
+        "Image objects and video contents have not been analyzed; PDF visual contents have not been analyzed. Matches can use your description, uploaded text or recognized screenshot text.",
       );
     if (attachments.some((f) => f.textTruncated))
       warnings.push(
@@ -261,7 +283,7 @@ const OH_INGESTION = (() => {
         lastModified: f.lastModified || 0,
       })),
       disclosure:
-        "These are editable starting points. Matches use your notes and readable text, while photos, PDFs and videos remain reference files. Files save only on this device.",
+        "Matches use your notes, readable text files or recognized screenshot text. Recognized text may contain errors; pictured objects and video are not interpreted. Original files save only on this device.",
     };
   }
   async function ingest(input, options) {

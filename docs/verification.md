@@ -1,4 +1,6 @@
-# Verification — 15 November 2026
+> This report describes the earlier discovery layout. For current capabilities and verification limits, see [Activity finder, 19 November 2026](finder.md). Prior browser/Axe results do not verify the current page.
+
+# Historical verification — Verification — 15 November 2026
 
 ## Automated and browser results
 

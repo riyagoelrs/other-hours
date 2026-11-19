@@ -1,3 +1,5 @@
+> Historical design, superseded by the [activity finder](finder.md) on 19 November 2026. Its studies are not current UI screenshots.
+
 # Other Hours: the workroom
 
 The reference is [HUMAN.md](https://www.human-md.ai/). Its opening is a staged room: a blue wall, floor, huge Bricolage lettering with Instrument Serif punctuation, foreground objects and independent movement as the reader scrolls. That structure informed this pass. The reference's HTML, CSS, opening-scene markup and public preview image were inspected. Other Hours does not ship its artwork, characters, JavaScript, wording or camera choreography.

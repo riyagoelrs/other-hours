@@ -6,17 +6,39 @@ const OH_DISCOVERY = (() => {
       .normalize("NFKD")
       .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase();
+  const validCoordinates = (point) =>
+    !!point &&
+    Number.isFinite(point.lat) &&
+    Number.isFinite(point.lng) &&
+    Math.abs(point.lat) <= 90 &&
+    Math.abs(point.lng) <= 180;
   function distanceKm(a, b) {
+    if (!validCoordinates(a) || !validCoordinates(b)) return null;
     const radians = (degrees) => (degrees * Math.PI) / 180;
     const deltaLat = radians(b.lat - a.lat),
       deltaLng = radians(b.lng - a.lng);
-    const halfChord =
-      Math.sin(deltaLat / 2) ** 2 +
-      Math.cos(radians(a.lat)) *
-        Math.cos(radians(b.lat)) *
-        Math.sin(deltaLng / 2) ** 2;
+    const halfChord = Math.min(
+      1,
+      Math.max(
+        0,
+        Math.sin(deltaLat / 2) ** 2 +
+          Math.cos(radians(a.lat)) *
+            Math.cos(radians(b.lat)) *
+            Math.sin(deltaLng / 2) ** 2,
+      ),
+    );
     return (
       6371 * 2 * Math.atan2(Math.sqrt(halfChord), Math.sqrt(1 - halfChord))
+    );
+  }
+  function durationMinutes(label) {
+    // Use the upper end of a stated active-time range. Never guess a class length.
+    const match = normalize(label).match(
+      /\b(\d+(?:\.\d+)?)(?:\s*[–—-]\s*(\d+(?:\.\d+)?))?\s*(min(?:ute)?s?|hours?)\b/,
+    );
+    if (!match) return null;
+    return (
+      Number(match[2] || match[1]) * (match[3].startsWith("hour") ? 60 : 1)
     );
   }
   const contains = (text, term) =>
@@ -36,6 +58,8 @@ const OH_DISCOVERY = (() => {
         borough: "",
         neighborhood: "",
         budget: "",
+        duration: "",
+        communityType: "",
         beginner: false,
         free: false,
         reuse: false,
@@ -64,7 +88,19 @@ const OH_DISCOVERY = (() => {
         text.match(
           /(?:under|below|less than|up to|budget(?: of)?|for)\s*\$?\s*(\d{1,4})(?:\b|$)/,
         ) || text.match(/\$(\d{1,4})\b/);
-      if (budget) result.budget = Number(budget[1]);
+      if (
+        budget &&
+        !/^(?:\s*)(?:min|hour)/.test(
+          text.slice(budget.index + budget[0].length),
+        )
+      )
+        result.budget = Number(budget[1]);
+      const time = text.match(/\b(\d+(?:\.\d+)?)\s*(minutes?|mins?|hours?)\b/);
+      if (time)
+        result.duration =
+          Number(time[1]) * (time[2].startsWith("hour") ? 60 : 1);
+      else if (/\bhalf an hour\b/.test(text)) result.duration = 30;
+      else if (/\b(?:an|one) hour\b/.test(text)) result.duration = 60;
       result.beginner = /\bbeginner|\bfirst|\bnew to|\blearn|\beasy\b/.test(
         text,
       );
@@ -79,13 +115,34 @@ const OH_DISCOVERY = (() => {
         )
       )
         result.view = "community";
+      if (/\bclass|\bworkshop/.test(text)) result.communityType = "classes";
+      else if (/\bcommunity|\bcommunities|\bgroup|\bclub/.test(text))
+        result.communityType = "groups";
       if (/\bcreator|\binstructor|\btutorial/.test(text))
         result.view = "people";
       if (/\bmaterials|\bsupplies|\bfabric store|\breuse store/.test(text))
         result.view = "materials";
       return result;
     }
+    function pointFor(item) {
+      const point = item.coordinates || data.places[item.placeId]?.coordinates;
+      return validCoordinates(point) ? point : null;
+    }
+    function distanceTo(item, filters) {
+      return distanceKm(filters.center, pointFor(item));
+    }
     function inArea(item, filters) {
+      if (
+        item.location?.cityId &&
+        item.location.cityId !== (filters.cityId || cityId)
+      )
+        return false;
+      if (validCoordinates(filters.center)) {
+        const distance = distanceTo(item, filters);
+        return distance === null
+          ? filters.includeUnlocated !== false
+          : distance <= Number(filters.radiusKm || 4.828032);
+      }
       const location = item.location;
       if (!filters.borough && !filters.neighborhood) return true;
       if (!location || location.cityId !== (filters.cityId || cityId))
@@ -146,7 +203,7 @@ const OH_DISCOVERY = (() => {
         for (const word of [b.name, ...b.neighborhoods])
           residual = residual.replaceAll(normalize(word), " ");
       const stop = new Set(
-        "i a an the want to try learn how make new hobby hobbies creative affordable budget under below less than up at for of in near around live looking find me my is with and or all nyc york city beginner beginners friendly easy free secondhand second hand reuse borrow local projects materials supplies classes workshops people groups communities something activity activities".split(
+        "i a an the want to try learn how make new hobby hobbies creative affordable budget under below less than up at for of in near around live looking find me my is with and or all nyc york city beginner beginners friendly easy free secondhand second hand reuse borrow local projects materials supplies classes workshops people groups communities something activity activities have only time minute minutes min mins hour hours half one today nearby".split(
           " ",
         ),
       );
@@ -180,15 +237,29 @@ const OH_DISCOVERY = (() => {
           const relevance = relevantScore(item, parsed);
           const localCount =
             kind === "projects"
-              ? item.placeIds.filter((id) => inArea(data.places[id], filters))
-                  .length
+              ? item.placeIds.filter(
+                  (id) =>
+                    inArea(data.places[id], filters) &&
+                    (!validCoordinates(filters.center) ||
+                      distanceTo(data.places[id], filters) !== null),
+                ).length
               : 0;
-          const directArea = kind === "projects" ? true : inArea(item, filters);
+          const directArea =
+            kind === "projects"
+              ? true
+              : inArea(
+                  item,
+                  kind === "people" ? { ...filters, center: null } : filters,
+                );
           return {
             item,
             relevance,
             localCount,
             directArea,
+            distance:
+              kind === "projects" || kind === "people"
+                ? null
+                : distanceTo(item, filters),
             score:
               relevance * 10 +
               Math.min(localCount, 3) * 8 +
@@ -197,6 +268,25 @@ const OH_DISCOVERY = (() => {
         })
         .filter(({ item, relevance, directArea }) => {
           if (relevance <= 0 || !directArea) return false;
+          if (
+            kind === "projects" &&
+            filters.duration &&
+            (durationMinutes(item.time) === null ||
+              durationMinutes(item.time) > Number(filters.duration))
+          )
+            return false;
+          if (
+            kind === "community" &&
+            filters.communityType === "classes" &&
+            item.type !== "class"
+          )
+            return false;
+          if (
+            kind === "community" &&
+            filters.communityType === "groups" &&
+            (item.type === "class" || item.format === "workshop")
+          )
+            return false;
           if (
             filters.category &&
             filters.category !== "all" &&
@@ -250,10 +340,20 @@ const OH_DISCOVERY = (() => {
         })
         .sort((a, b) => {
           if (
+            validCoordinates(filters.center) &&
+            ["materials", "community"].includes(kind)
+          )
+            return (
+              (a.distance ?? Infinity) - (b.distance ?? Infinity) ||
+              b.score - a.score
+            );
+          if (
             kind === "projects" &&
             !query.trim() &&
             !filters.borough &&
             !filters.neighborhood &&
+            !validCoordinates(filters.center) &&
+            !filters.duration &&
             (!filters.category || filters.category === "all") &&
             !filters.budget &&
             !filters.free
@@ -289,9 +389,24 @@ const OH_DISCOVERY = (() => {
         elsewhere: items.filter((p) => !inArea(p, filters)),
       };
     }
-    return { intent, search, inArea, relatedPlaces, relevantScore };
+    return {
+      intent,
+      search,
+      inArea,
+      relatedPlaces,
+      relevantScore,
+      pointFor,
+      distanceTo,
+    };
   }
-  return { create, normalize, contains, distanceKm };
+  return {
+    create,
+    normalize,
+    contains,
+    distanceKm,
+    validCoordinates,
+    durationMinutes,
+  };
 })();
 if (typeof module !== "undefined" && module.exports)
   module.exports = OH_DISCOVERY;

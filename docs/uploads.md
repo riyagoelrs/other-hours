@@ -1,35 +1,29 @@
-# Photos, files and link dropping
+# Photos, screenshots, files and links
 
-Other Hours now accepts device photos, PDF references, text/Markdown notes and short video files beside the existing idea/link input. **Add photos** opens a native image picker with multiple selection and no camera-forcing `capture` attribute. **Add files** provides the broader file picker. The same area accepts dropped files and dropped links; clipboard images can be pasted there as well.
+**Photo / screenshot** opens a native image picker with multiple selection and no camera-forcing `capture` attribute. **Add files** opens the broader file picker. The search area accepts dropped files, supported platform links and clipboard images. This is the website’s picker; it cannot modify attachment controls in the ChatGPT iPhone app.
 
-Photo thumbnails show immediately. A browser that cannot decode a HEIC original keeps the reference and offers the original file; it does not claim a visual interpretation. PDF/video references offer the original download rather than an embedded or automatically analyzed player. A user description or an uploaded text file can generate a related editable starter plan. Literal text-file evidence is identified by filename and remains separate from editorial supply suggestions.
+Images preview locally. If a browser cannot decode a HEIC original, the original stays attached and available to download. PDFs and videos remain references rather than embedded analysis players.
 
-Files are private to the current browser/device and save with the plan in IndexedDB. There is no new cloud storage, server upload, user-account requirement or transmission to the assistant chat. The existing optional link-analysis service receives no file bytes. Reopening a plan restores its files; downloads preserve original bytes. Reference-aware deletion retains files that another saved plan still needs. Clearing browser site data also clears these local references.
+## Read screenshot text
 
-## Limits and behavior
+Attach an image, choose **Read screenshot text**, review/correct the recognized English text, then **Find activities**. Tesseract.js, its worker/core and the English model load from this site only on demand. The device reads a resized working canvas; the original file stays unchanged. There is progress, cancellation and a fallback for unclear text or unsupported image decoding. OCR can misread quantities and words; source notes label it explicitly. Editing recognized text or changing attachments disables saving a stale result until the search runs again.
 
-| Input                                         | Limit / treatment                                                                      |
-| --------------------------------------------- | -------------------------------------------------------------------------------------- |
-| Photos: JPEG, PNG, WebP, GIF, AVIF, HEIC/HEIF | 20 MB each; native preview when supported; original retained                           |
-| PDF                                           | 20 MB each; reference/original download; no automatic PDF extraction                   |
-| MP4, MOV, WebM                                | 50 MB each; reference/original download; no transcription                              |
-| Plain text / Markdown                         | 1 MB each; first 16,000 characters provide source evidence; complete original retained |
-| A plan’s references                           | Six files, 100 MB combined; can be combined with a public inspiration link             |
-| Unsupported / empty / mismatched files        | Rejected with a readable status; existing files remain available                       |
+This reads text, not pictured objects or a video. Photos without legible text need a description. PDFs/videos need a description; text/Markdown files can supply their own evidence. Public titles can suggest a guide but cannot establish a supply list. Recognized/source text and curated starter supplies are separate.
 
-Changing files after creating a plan marks the draft as needing a refresh. **Find my thing** rebuilds the evidence before saving, so a removed document cannot silently remain an active source. A storage failure leaves the editable plan open and does not claim that its files were saved. Filenames and source text are escaped; uploaded active SVG/HTML content is not embedded.
+## Local saving
 
-On narrow screens, editable intake and plan fields use 16 px text to avoid the usual iPhone Safari focus zoom. The native operating-system photo chooser and any app photo permissions remain under the device’s control.
+Save an edited plan to keep its original references in IndexedDB. Only descriptors, source notes and plan text go into localStorage; no file bytes are stored there. Files are not sent to the optional link service, a model provider, cloud storage or the assistant chat. Reopening a saved plan restores files on the same browser/device. Reference-aware deletion keeps files another plan still uses. Clearing browser data clears these local references. A storage failure is shown rather than presented as a successful save.
+
+| Input                                 | Limit / treatment                                                               |
+| ------------------------------------- | ------------------------------------------------------------------------------- |
+| JPEG, PNG, WebP, GIF, AVIF, HEIC/HEIF | 20 MB each; native preview when supported; local OCR requires a decodable image |
+| PDF                                   | 20 MB each; original reference, no PDF extraction                               |
+| MP4, MOV, WebM                        | 50 MB each; original reference, no transcription                                |
+| Text / Markdown                       | 1 MB each; first 16,000 characters used as text evidence; original retained     |
+| Whole plan                            | 6 files, 100 MB total                                                           |
+
+Names, MIME types and file headers are checked. Duplicates, unsupported active formats and oversize inputs are rejected. Filenames and recognized text are escaped when rendered. HEIC-to-JPEG picker conversions and pasted images without extensions are supported when their headers/types are valid.
 
 ## Verification
 
-- **31 Node tests pass** across the complete discovery/service suite and file validation, including size/count limits, duplicate files, HEIC originals, JPEG exports retaining a HEIC name, clipboard images without an extension, text bounds, literal provenance and absent browser storage.
-- The existing **14 desktop/mobile journey groups pass**, preserving ideas, links, geography, legacy saves and checklists.
-- **Eight additional browser groups pass** on desktop and an iPhone-sized viewport: a real native file chooser, photo previews, file/link dropping, mixed provenance, source refresh after removal, saving/reloading files, original text downloads, safe filenames, reselection, reference-aware deletion and storage failure behavior.
-- **Zero Axe WCAG 2/2.1 A/AA rule violations** were found across the home/intake, reference result and saved-reference dialog on both widths.
-- File-only intake was checked for zero external requests. Tests use a previous site screenshot and explicitly written text as fixtures. Successful oEmbed metadata in mixed-link tests is a labeled fixture.
-- Browser checks use Chromium at 1440 px and 390 px with width sweeps from 320 to 1440 px. This is not a physical-device test of the iPhone Photos application or Safari’s operating-system chooser.
-
-Run `python scripts/upload-browser-check.py` against the local static site. Native file choosers are exercised through Playwright’s file-chooser event, and persisted originals are checked after a reload rather than inferred from a success message.
-
-Evidence: [upload browser results](upload-browser-results.json), [upload accessibility results](upload-accessibility-results.json), [desktop intake](screenshots/upload-intake-desktop.png), [mobile intake](screenshots/upload-intake-mobile.png), and [saved files](screenshots/saved-upload-files.png).
+See [the current finder record](finder.md), [real OCR output](finder-ocr-check.json) and [DOM-controller output](finder-dom-check.json). Forty Node tests pass alongside a real-engine synthetic screenshot check and DOM integration checks. Browser rendering, native iPhone picker behavior and hosted OCR loading are not verified in this environment. Earlier upload browser reports are historical.

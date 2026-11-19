@@ -1,4 +1,4 @@
-// Bundle the working static site for an offline review. No remote asset requests required.
+// Bundle the core site for offline review. OCR uses sibling same-origin assets on HTTP(S).
 import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
@@ -51,11 +51,6 @@ for (const [id, url] of Object.entries(illustrations))
   page = page.replaceAll("./assets/illustrations/" + id + ".svg", url);
 for (const [file, url] of Object.entries(photos))
   page = page.replaceAll(file, url);
-for (const scene of ["worktable.svg", "worktable-mobile.svg"])
-  page = page.replaceAll(
-    "./assets/scenes/" + scene,
-    encode("assets/scenes/" + scene, "image/svg+xml"),
-  );
 page = page.replaceAll(
   "./assets/favicon.svg",
   encode("assets/favicon.svg", "image/svg+xml"),
@@ -73,8 +68,10 @@ const scripts =
     "config.js",
     "data.js",
     "discovery.js",
+    "nearby.js",
     "ingestion.js",
     "uploads.js",
+    "ocr.js",
     "upload-ui.js",
   ]
     .map((file) => fs.readFileSync(file, "utf8"))
@@ -84,7 +81,7 @@ const scripts =
   ";\n" +
   app +
   "\n;\n" +
-  fs.readFileSync("scene.js", "utf8");
+  fs.readFileSync("finder.js", "utf8");
 page = page.replace(
   "</body>",
   () =>

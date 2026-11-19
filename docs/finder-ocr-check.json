@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "fixture": "synthetic text screenshot",
+  "confidence": 95,
+  "text": "SASHIKO REPAIR\n\nMend denim with needle and thread.\nSupplies: cotton thread, needle, denim.\n\nStitch small rows to mend your jeans.",
+  "matchedGuides": [
+    "sashiko-mending",
+    "visible-mending",
+    "embroidered-patch",
+    "bookbinding-stitch"
+  ],
+  "originalUnchanged": true,
+  "scope": "Real Node OCR engine and ingestion; not browser, iPhone picker or hosted-worker verification"
+}

@@ -3,7 +3,9 @@
 const OH_UPLOAD_UI = (() => {
   let items = [],
     pending = Promise.resolve(),
-    busy = 0;
+    busy = 0,
+    revision = 0,
+    ocrController = null;
   const galleries = new Map();
   const asFiles = (value) =>
     Array.isArray(value)
@@ -107,14 +109,16 @@ const OH_UPLOAD_UI = (() => {
   }
   function isCurrent(source) {
     return (
+      ((!items.length && !asFiles(source?.attachments).length) ||
+        source?.uploadRevision === revision) &&
       items
         .map((file) => file.id)
         .sort()
         .join(",") ===
-      asFiles(source?.attachments)
-        .map((file) => file.id)
-        .sort()
-        .join(",")
+        asFiles(source?.attachments)
+          .map((file) => file.id)
+          .sort()
+          .join(",")
     );
   }
   function updateResultState() {
@@ -134,7 +138,74 @@ const OH_UPLOAD_UI = (() => {
     items.forEach((item, i) => setFilePreview(view.cards[i], item, view.urls));
     find("#caption-container").hidden =
       !items.length && !isLink(find("#search-query").value.trim());
+    find("#ocr-tools").hidden = !items.some((file) => file.kind === "image");
+    renderOcrText();
     updateResultState();
+  }
+  function renderOcrText() {
+    find("#ocr-texts").innerHTML = items
+      .filter((file) => file.kind === "image" && file.ocrText !== undefined)
+      .map(
+        (file) =>
+          `<label class="ocr-text-label">Text from ${html(file.name)} — review or correct<textarea data-ocr-text="${html(file.id)}" rows="3" maxlength="16000">${html(file.ocrText)}</textarea></label>`,
+      )
+      .join("");
+  }
+  async function readScreenshots() {
+    if (ocrController || busy) return;
+    ocrController = new AbortController();
+    const controller = ocrController;
+    const button = find("#read-screenshots"),
+      cancel = find("#cancel-ocr"),
+      progress = find("#ocr-status");
+    button.disabled = true;
+    cancel.hidden = false;
+    progress.hidden = false;
+    busy++;
+    find("#search-form button[type=submit]").disabled = true;
+    updateResultState();
+    let success = 0;
+    const errors = [];
+    try {
+      for (const file of [...items].filter((f) => f.kind === "image")) {
+        if (controller.signal.aborted) break;
+        try {
+          const result = await OH_OCR.read(file.file, {
+            signal: controller.signal,
+            onProgress: (message) => {
+              progress.textContent = file.name + ": " + message;
+            },
+          });
+          if (items.some((item) => item.id === file.id)) {
+            file.ocrText = result.text;
+            revision++;
+            success++;
+            renderOcrText();
+          }
+        } catch (error) {
+          errors.push(
+            error.message || "Text reading failed. Add a description instead.",
+          );
+        }
+      }
+      progress.textContent =
+        [
+          success
+            ? "Text read. Review it below, then choose Find activities."
+            : "",
+          ...new Set(errors),
+        ]
+          .filter(Boolean)
+          .join(" ") ||
+        "Text reading cancelled. Your originals are still attached.";
+    } finally {
+      busy--;
+      ocrController = null;
+      button.disabled = false;
+      cancel.hidden = true;
+      find("#search-form button[type=submit]").disabled = !!busy || linkBusy;
+      updateResultState();
+    }
   }
   function add(files) {
     const chosen = [...files];
@@ -148,9 +219,10 @@ const OH_UPLOAD_UI = (() => {
       .then(async () => {
         const result = await OH_UPLOADS.readFiles(chosen, items);
         items.push(...result.accepted);
+        if (result.accepted.length) revision++;
         draft();
         const summary = result.accepted.length
-          ? `${result.accepted.length} file${result.accepted.length === 1 ? "" : "s"} added. Add a description or choose Find my thing.`
+          ? `${result.accepted.length} file${result.accepted.length === 1 ? "" : "s"} added. Add a description or choose Find activities.`
           : "";
         status(
           [summary, ...result.errors].filter(Boolean).join(" "),
@@ -168,7 +240,7 @@ const OH_UPLOAD_UI = (() => {
   }
   function augment(baseResult = null, query = "") {
     if (!items.length) return baseResult;
-    return OH_INGESTION.fromUploads(
+    const result = OH_INGESTION.fromUploads(
       {
         attachments: items,
         query,
@@ -178,13 +250,15 @@ const OH_UPLOAD_UI = (() => {
       { data, discovery },
       baseResult,
     );
+    result.uploadRevision = revision;
+    return result;
   }
   async function saveReferences(source) {
     const descriptors = asFiles(source?.attachments);
     if (!descriptors.length) return [];
     if (!isCurrent(source))
       throw new Error(
-        "Your reference files changed. Choose Find my thing again before saving.",
+        "Your reference files changed. Choose Find activities again before saving.",
       );
     const selected = items.filter((item) =>
       descriptors.some((file) => file.id === item.id),
@@ -237,19 +311,43 @@ const OH_UPLOAD_UI = (() => {
       const remove = event.target.closest("[data-upload-remove]");
       if (!remove) return;
       items = items.filter((file) => file.id !== remove.dataset.uploadRemove);
+      revision++;
       draft();
       status(
         items.length
-          ? "Reference removed. Choose Find my thing again to update the plan."
+          ? "Reference removed. Choose Find activities again to update the plan."
           : "References removed. Your link and notes are still here.",
       );
       find("#add-photos").focus({ preventScroll: true });
     });
     find("#clear-uploads").addEventListener("click", () => {
+      ocrController?.abort();
       items = [];
+      revision++;
       draft();
       status("References removed. Your link and notes are still here.");
       find("#add-photos").focus({ preventScroll: true });
+    });
+    find("#read-screenshots").addEventListener("click", readScreenshots);
+    find("#cancel-ocr").addEventListener("click", () => ocrController?.abort());
+    for (const selector of ["#caption-input", "#text-kind"])
+      find(selector).addEventListener(
+        selector === "#text-kind" ? "change" : "input",
+        () => {
+          if (items.length) {
+            revision++;
+            updateResultState();
+          }
+        },
+      );
+    find("#ocr-texts").addEventListener("input", (event) => {
+      const file = items.find(
+        (file) => file.id === event.target.dataset.ocrText,
+      );
+      if (!file) return;
+      file.ocrText = event.target.value.slice(0, 16000);
+      revision++;
+      updateResultState();
     });
     const form = find("#search-form");
     let depth = 0;
@@ -308,7 +406,7 @@ const OH_UPLOAD_UI = (() => {
         renderInspiration(augment(null, find("#search-query").value.trim()));
         status(
           currentInspiration.matches.length
-            ? "A starter guide is ready from your notes or text file. Your reference files are attached."
+            ? "A starter guide is ready from your notes or readable text. Your reference files are attached."
             : "Your reference files are ready. Describe the project above, or choose a starter guide below.",
         );
         find("#link-result").scrollIntoView({
@@ -322,6 +420,7 @@ const OH_UPLOAD_UI = (() => {
       if (items.length) find("#caption-container").hidden = false;
     });
     window.addEventListener("pagehide", (event) => {
+      ocrController?.abort();
       if (!event.persisted) for (const root of galleries.keys()) release(root);
     });
   }

@@ -2,44 +2,45 @@
 
 ## Product and stack
 
-Other Hours is an NYC-first, mobile-first hobby-to-real-life discovery website. People search an interest or paste inspiration to connect a starter guide to materials, places, public classes, communities and creative people. Preserve the tactile editorial identity and the working static GitHub Pages deployment.
+Other Hours is an NYC-first, mobile-first hobby discovery website: find an activity, find people and supplies, and get started. Keep the framework-free static GitHub Pages deployment working.
 
-- `index.html`, `styles.css`: page structure, design tokens and responsive editorial layouts.
-- `data.js`: versioned catalog with cities, hobbies, projects, materials, places, classes, communities and creators.
-- `discovery.js`: shared pure intent parsing, ranking, geographic filters and distance calculation.
-- `ingestion.js`: allowlisted platform URLs, official metadata, source-backed extraction and fallback.
-- `uploads.js`, `upload-ui.js`: local reference-file intake, native photo library picking, drop/paste and IndexedDB-backed plan attachments.
-- `app.js`: rendering, native project dialog, saved interests / plans, checklists and copy actions.
-- `scene.js`: the worktable guide picker and event-driven motion with reduced-motion support.
-- `config.js`: public optional service endpoint, never secrets.
-- `service/`: standalone, optional Node ingestion service. Pages must work without it.
+- `index.html`, `styles.css`: compact activity finder, visible filters, readable responsive results.
+- `data.js`: sourced catalog with stable guides, materials, places, classes, communities and profiles.
+- `discovery.js`: pure intent, ranking, time/budget/category filters, geography and distances.
+- `nearby.js`: explicit geolocation request, errors and cancellation of late callbacks.
+- `ingestion.js`: allowed platform URLs, permitted metadata, grounded text extraction and fallback.
+- `uploads.js`, `upload-ui.js`: file checks, picker/drop/paste, OCR review and IndexedDB references.
+- `ocr.js`, `assets/ocr/`: lazy self-hosted Tesseract English OCR, licenses and source record.
+- `app.js`, `finder.js`: results, native dialogs, saved interests/plans/checklists, copy and surprise picker.
+- `config.js`, `service/`: optional public ingestion endpoint and standalone Node service. Never secrets; Pages works without either.
 
 ## Design and accessibility
 
-Keep the HUMAN.md-inspired workroom direction: a cobalt type wall, pink search table, oversized Bricolage Grotesque with brief Instrument Serif interruptions, and the original timer/thread/book scene. The scene's hobby picker is a real guide entry point; native scrolling and reduced-motion preferences must remain intact. Keep forms outside the object layer on every viewport. Avoid returning to the beige serif/stock-photo hero, decorative tape or repeated framed cards. Original scene art lives in `assets/scenes/`; third-party photo provenance lives in `assets/photos/README.md`. Never imply pictured spaces are catalog listings. Preserve labels, keyboard operation, native dialogs, mobile file picking and readable controls.
+The user’s current preference is simplicity and usable discovery. Use the compact directory in `docs/finder.md`; the former cobalt/pink workroom is historical. Avoid giant decorative heroes, object scenes, tape, excessive framed cards or promotional sections before the actual results. Keep Activities, Communities and Reuse & supplies obvious, with visible interest/time/budget/area filters. Preserve keyboard operation, readable type, reduced motion, native dialog behavior and mobile photo-library picking without forcing camera capture.
 
-## Data integrity
+## Integrity and location
 
-Never invent stock, quotes, event dates, enrollment, follower counts, official creator accounts, independence of ownership or platform transcripts. Cite real public URLs and record check dates and access restrictions. Price ranges and substitutes are editorial suggestions. An HTTP success alone does not prove inventory or a current class offering. Show organizational eligibility and tool training / membership restrictions.
+Never invent stock, prices, event dates, seats, membership, creator accounts or transcripts. Link real public sources and check dates, and preserve eligibility and tool training restrictions. Estimate active time conservatively from stated numeric ranges; do not guess workshop/weekend lengths. Distances use sourced venue points. A host venue is not a guarantee about the next meeting. Do not assign a point to citywide, rotating or multi-branch groups. Label unlocated listings explicitly and keep them out of radius claims.
 
-IDs and project slugs are foreign keys. Retain the original 33 guide slugs and `materials[].legacyIndex` positions so `oh:saved` and `oh:checked:<slug>` remain readable and rollback stays safe. Add explicit migrations if a future change genuinely requires them; do not clear local storage. Keep geography scoped by `cityId`. Sourced coordinate points are approximate address locations, not entrances or GPS observations.
+Device geolocation is opt-in. Never persist coordinates, put them in a URL or send them to metadata services/maps. Keep NYC coverage explicit; retain manual borough/neighborhood selection. Home activities remain available and can rank by related nearby places.
 
-## Reference files
+Catalog IDs and slugs are foreign keys. Retain the original 33 guide slugs, `oh:saved` and material `legacyIndex` positions in `oh:checked:<slug>`. Do not clear localStorage. Keep geography scoped by `cityId`.
 
-Selected files stay in the browser. Preserve file-count/type/header/size checks, safe filename rendering and reference-aware deletion. Store Blobs in IndexedDB and descriptors in existing plan records; never put file bytes in localStorage or silently transmit them. Photos/PDFs/videos are references until a legitimate analysis integration exists. Text-file excerpts must retain their filename and provenance. A native photo picker must allow the library, without forcing camera capture.
+## Reference files and inspiration
 
-## Inspiration policy
+Selected files stay on device. Preserve count/type/header/size checks, safe filename rendering and reference-aware deletion. Keep original Blobs in IndexedDB and descriptors in plans; never put file bytes in localStorage or silently transmit them. OCR may read English screenshot text locally after an explicit action; it does not understand objects, PDFs or videos. Preserve recognized text provenance and its possibility of errors. Review edits must invalidate a stale source before saving. Keep HEIC originals even if preview/recognition fails.
 
-A public title can suggest an editorial guide, but cannot establish an exact material list. Use only permitted metadata or text a user / authorized service supplies. Keep extracted requirements, inferred suggestions and editorial guide materials separate. Preserve provenance in saved plans. Do not scrape restricted pages, bypass platform access or expose API keys in static files. Backend descriptions and transcripts must fail gracefully to the static workflow.
+A public title can suggest a guide, but cannot prove a supply list. Keep source-backed requirements, OCR text and editorial suggestions distinct. Unsupported/private platform content needs a caption, screenshot or description. Do not scrape restricted pages or imply active video/vision analysis.
 
-## Verification and delivery
+## Checks and delivery
 
 ```sh
 npm run check
 npm test
 npm run build:pages
+npm run build:preview
 ```
 
-For browser regression checks, use Python Playwright and Chromium with `BASE_URL=http://localhost:4173/ python scripts/browser-check.py`. Verify a repository subpath as well as mobile widths. Screenshots and evidence live in `docs/`; transient builds and test captures live in ignored `work/`.
+Optional engine and DOM-controller checks: `node scripts/check-ocr.mjs` and `node scripts/check-dom.mjs`; development dependencies/reproduction are in README. These are not browser-rendering checks. Follow the active Sites skill for managed browser QA; if its supported tool is unavailable, skip browser QA and explicitly report that limit. Historical Python Playwright reports are not evidence for the current layout.
 
-Use a dedicated feature branch and open a PR. Do not force-push or overwrite production. Pages publishes `main` at https://riyagoelrs.github.io/other-hours/; branches do not automatically receive live previews. A separately hosted private review copy must be labeled accurately and deployed through its own workflow. Revert a merged PR to roll back.
+Use a dedicated branch/PR. Do not force-push, merge or overwrite production without user authorization. Pages publishes `main`; the private review copy has its own retained Sites identity and audience. Build, package and publish the private review through its supported workflow. Never persist or print hosting credentials.

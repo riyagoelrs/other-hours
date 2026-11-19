@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "scope": "Node DOM integration, not browser rendering",
+  "flows": [
+    "initial activity results",
+    "time filtering",
+    "groups/classes switch",
+    "opt-in location and manual reset",
+    "coordinates not persisted",
+    "image attachment",
+    "recognized-text matching",
+    "stale-source save guard",
+    "link + caption fallback after removing files",
+    "unreadable link exposes caption and screenshot actions"
+  ],
+  "contentFetchCalls": 0
+}

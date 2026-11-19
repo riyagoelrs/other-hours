@@ -76,6 +76,11 @@ const state = {
   neighborhood: initialNeighborhood,
   category: "all",
   budget: "",
+  duration: "",
+  communityType: "groups",
+  center: null,
+  radiusKm: 4.828032,
+  includeUnlocated: true,
   beginner: false,
   free: false,
   reuse: false,
@@ -108,6 +113,9 @@ const range = (min, max) =>
         : "$0 with what you own"
       : `$${min}–${max}`;
 const areaName = () =>
+  (state.center
+    ? "within " + (state.radiusKm / 1.609344).toFixed(0) + " mi of you"
+    : "") ||
   state.neighborhood ||
   data.cities.nyc.boroughs[state.borough]?.name ||
   "all NYC";
@@ -131,8 +139,56 @@ function persistArea() {
     neighborhood: state.neighborhood,
   });
 }
+const nearby = OH_NEARBY.create({
+  geolocation: navigator.geolocation,
+  onPosition(point) {
+    state.center = point;
+    state.borough = "";
+    state.neighborhood = "";
+    state.limit = 12;
+    render();
+  },
+  onStatus(message, busy) {
+    $("#location-status").textContent =
+      (state.center &&
+      OH_DISCOVERY.distanceKm(state.center, { lat: 40.7128, lng: -74.006 }) > 65
+        ? "This directory currently covers NYC. No local directory is available for your area; choose an NYC neighborhood to browse. "
+        : "") + message;
+    $("#use-location").disabled = busy;
+    $("#use-location").textContent = busy
+      ? "Finding location…"
+      : state.center
+        ? "Refresh location"
+        : "Use my location";
+  },
+});
+function stopNearby() {
+  nearby.cancel();
+  state.center = null;
+  $("#use-location").disabled = false;
+  $("#location-status").textContent =
+    "NYC directory. Choose an area or share your location for distance sorting.";
+}
+function proximity(item) {
+  if (!state.center) return "";
+  const distance = discovery.distanceTo(item, state);
+  if (distance === null)
+    return '<p class="proximity unlocated">Changing or unlisted location · check organizer details</p>';
+  const miles = distance / 1.609344;
+  return `<p class="proximity">${miles < 0.1 ? "Less than 0.1" : miles.toFixed(1)} mi ${item.type === "community" || item.type === "class" ? "to host venue" : "away"} · approximate</p>`;
+}
 function updateLocationControls() {
   $("#borough-select").value = state.borough;
+  $("#radius-label").hidden = !state.center;
+  $("#clear-location").hidden = !state.center;
+  $("#unlocated-label").hidden =
+    !state.center || !["materials", "community"].includes(state.view);
+  $("#radius-select").value = String(state.radiusKm);
+  $("#unlocated-filter").checked = state.includeUnlocated;
+  if (!$("#use-location").disabled)
+    $("#use-location").textContent = state.center
+      ? "Refresh location"
+      : "Use my location";
   const neighborhoods = state.borough
     ? data.cities.nyc.boroughs[state.borough].neighborhoods
     : Object.values(data.cities.nyc.boroughs).flatMap((b) => b.neighborhoods);
@@ -157,13 +213,36 @@ function syncFilters() {
     .filter((o) => !["", "15", "30", "50", "100"].includes(o.value))
     .forEach((o) => (o.dataset.custom = "true"));
   budget.value = state.budget;
-  budget.disabled = !["projects", "saved"].includes(state.view);
+  const activityView = ["projects", "saved"].includes(state.view);
+  budget.disabled = !activityView;
+  $("#budget-label").hidden = !activityView;
+  $("#duration-label").hidden = !activityView;
+  const duration = $("#duration-select");
+  duration.querySelectorAll("[data-custom]").forEach((o) => o.remove());
+  if (
+    state.duration &&
+    ![...duration.options].some((o) => o.value === String(state.duration))
+  ) {
+    const option = new Option(
+      "Up to " + state.duration + " minutes",
+      String(state.duration),
+    );
+    option.dataset.custom = "true";
+    duration.add(option);
+  }
+  duration.value = state.duration;
+  $("#community-type-label").hidden = state.view !== "community";
+  $("#community-type").value = state.communityType;
   $("#beginner-filter").checked = state.beginner;
   $("#free-filter").checked = state.free;
   $("#reuse-filter").checked = state.reuse;
   $("#beginner-filter").disabled = ["materials", "people"].includes(state.view);
   $("#free-filter").disabled = ["materials", "people"].includes(state.view);
   $("#reuse-filter").disabled = ["community", "people"].includes(state.view);
+  for (const id of ["beginner-filter", "free-filter", "reuse-filter"])
+    $("#" + id).closest("label").hidden = $("#" + id).disabled;
+  $("#free-filter").closest("label").lastChild.textContent =
+    state.view === "community" ? "Free resources" : "Free starts";
   $("#place-type").value = state.placeType;
   $("#place-type-label").hidden = state.view !== "materials";
   $$("[data-category]").forEach((button) =>
@@ -188,7 +267,7 @@ function artFor(project) {
 }
 function projectCard({ item: p, localCount }) {
   const saved = savedProjects().includes(p.slug);
-  return `<article class="project-card"><button class="bookmark" data-save="${p.slug}" aria-label="${saved ? "Unsave" : "Save"} ${html(p.title)}" aria-pressed="${saved}">${bookmarkIcon}</button><div class="card-info"><span class="card-category">${html(data.hobbies[p.hobbyIds[0]].name)}</span><h3><a href="#project/${p.slug}">${html(p.title)}</a></h3><div class="card-meta"><span>${html(p.time)}</span><span>${p.budgetStatus === "provider-quote-required" ? "Check workshop fee" : p.budgetMin === 0 ? "Free start possible" : "$" + p.budgetMin + "–" + p.budgetMax + " est."}</span></div><p class="card-area">${state.borough || state.neighborhood ? (localCount ? `${localCount} resource${localCount === 1 ? "" : "s"} in ${html(areaName())}` : "Start anywhere · NYC resources") : p.reuseAvailable ? "Reuse and borrowing options" : "Start with a beginner workshop"}</p></div></article>`;
+  return `<article class="project-card"><button class="bookmark" data-save="${p.slug}" aria-label="${saved ? "Unsave" : "Save"} ${html(p.title)}" aria-pressed="${saved}">${bookmarkIcon}</button><div class="card-info"><span class="card-category">${html(data.hobbies[p.hobbyIds[0]].name)}</span><h3><a href="#project/${p.slug}">${html(p.title)}</a></h3><div class="card-meta"><span>${html(p.time)}</span><span>${p.budgetStatus === "provider-quote-required" ? "Check workshop fee" : p.budgetMin === 0 ? "Free start possible" : "$" + p.budgetMin + "–" + p.budgetMax + " est."}</span></div><p class="card-area">${state.center || state.borough || state.neighborhood ? (localCount ? `${localCount} related place${localCount === 1 ? "" : "s"} ${state.center ? "" : "in "}${html(areaName())}` : "Start anywhere · NYC resources") : p.reuseAvailable ? "Reuse and borrowing options" : "Start with a beginner workshop"}</p></div></article>`;
 }
 const placeTypes = {
   reuse: "SECONDHAND & REUSE",
@@ -198,11 +277,23 @@ const placeTypes = {
   classes: "STUDIO & LEARNING",
 };
 function placeCard(p, i) {
-  return `<article class="directory-card"><p class="eyebrow"><span>${placeTypes[p.type]}</span><span>NEW YORK CITY</span></p><h3>${html(p.name)}</h3><p class="card-area">${html(p.area)}</p><p>${html(p.summary)}</p><div class="card-actions">${external(p.url, "Visit website", "text-button")}</div><details class="place-access"><summary>Address, access &amp; what to know</summary><p>${html(p.address)}</p>${external(mapLink(p), "Open map")}<p class="access-note">${html(p.access)}</p><p>Useful for ${p.hobbyIds.map((id) => html(data.hobbies[id].name.toLowerCase())).join(", ")}. Ask about suitable materials; stock is not live.</p></details><p class="source-check">PUBLIC SOURCE · ${html(p.source.checkedAt)}${p.source.status === "access-restricted" ? " · ACCESS RESTRICTED HERE" : ""}</p></article>`;
+  return `<article class="directory-card"><p class="eyebrow"><span>${placeTypes[p.type]}</span><span>NEW YORK CITY</span></p><h3>${html(p.name)}</h3><p class="card-area">${html(p.area)}</p>${proximity(p)}<p class="place-address">${html(p.address)}</p><p>${html(p.summary)}</p><div class="card-actions">${external(p.url, "Visit website", "text-button")}</div><details class="place-access"><summary>Address, access &amp; what to know</summary><p>${html(p.address)}</p>${external(mapLink(p), "Open map")}<p class="access-note">${html(p.access)}</p><p>Useful for ${p.hobbyIds.map((id) => html(data.hobbies[id].name.toLowerCase())).join(", ")}. Ask about suitable materials; stock is not live.</p></details><p class="source-check">PUBLIC SOURCE · ${html(p.source.checkedAt)}${p.source.status === "access-restricted" ? " · ACCESS RESTRICTED HERE" : ""}</p></article>`;
 }
+const communityFormats = {
+  meetup: "Meetup group",
+  library: "Library programs",
+  critique: "Peer critiques",
+  volunteering: "Volunteer community",
+  "maker-space": "Maker community",
+  outdoors: "Outdoor community",
+  garden: "Garden community",
+  dance: "Dance community",
+  "community-arts": "Community arts",
+  workshop: "Workshop provider",
+};
 function communityCard(c, i) {
   const isClass = c.type === "class";
-  return `<article class="directory-card"><p class="eyebrow"><span>${isClass ? "CLASS PROGRAM" : c.free ? "PUBLIC / FREE RESOURCES" : "COMMUNITY"}</span></p><h3>${html(c.title || c.name)}</h3><p class="card-area">${html(c.area)}</p><p>${html(c.summary)}</p><p>${isClass ? "Confirm fee, equipment, included supplies and beginner level with the provider." : html(c.join)}</p><div class="card-actions">${external(c.url, isClass ? "View workshops" : "Find out how to join", "text-button")}</div><p class="source-check">${isClass ? "PROGRAM REFERENCE · NO LIVE SEATS" : "PUBLIC ORGANIZATION · EXTERNAL TO OTHER HOURS"}</p></article>`;
+  return `<article class="directory-card"><p class="eyebrow"><span>${isClass ? "Classes & workshops" : html(communityFormats[c.format] || "Community")}</span></p><h3>${html(c.title || c.name)}</h3><p class="card-area">${html(c.area)}</p>${proximity(c)}<p>${html(c.summary)}</p><p>${isClass ? "Confirm fee, equipment, included supplies and beginner level with the provider." : html(c.join)}</p><div class="card-actions">${external(c.url, isClass ? "View workshops" : "Visit group / how to join", "text-button")}</div><p class="source-check">${isClass ? "PROGRAM REFERENCE · NO LIVE SEATS" : "PUBLIC ORGANIZATION · EXTERNAL TO OTHER HOURS"}</p></article>`;
 }
 function creatorCard(c) {
   const related = data.projects
@@ -271,7 +362,7 @@ function renderMap(results) {
       marker: [lat, lng].join(","),
     });
   $("#map-panel").innerHTML =
-    `<div class="map-heading"><label for="map-reference">Explore near <select id="map-reference">${located.map((p) => `<option value="${p.id}" ${p.id === reference.id ? "selected" : ""}>${html(p.name)}</option>`).join("")}</select></label><p class="small-note">${located.length} of ${results.length} results have sourced coordinates. No GPS needed.</p></div><div class="map-layout"><div><iframe title="Street map near ${html(reference.name)}" src="${html(mapUrl)}" loading="lazy" referrerpolicy="no-referrer"></iframe><p class="map-attribution">Map © OpenStreetMap contributors · ${external(mapLink(reference), "Open full map")}</p></div><div class="nearby-list"><p class="eyebrow">WITHIN 5 KM OF ${html(reference.name)}</p>${nearby.length ? nearby.map(({ place: p, distance }) => `<div><strong>${external(p.url, p.name)}</strong><span>${distance < 0.1 ? "< 0.1" : distance.toFixed(1)} km</span><small>${html(p.area)} · ${external(mapLink(p), "Map")}</small></div>`).join("") : '<p class="small-note">No other verified points within 5 km among these results. Try a broader area or another interest.</p>'}<p class="small-note">Distances are straight lines between address points, not walking routes or accessible entrances. See access details in the list below.</p></div></div>`;
+    `<div class="map-heading"><label for="map-reference">Explore near <select id="map-reference">${located.map((p) => `<option value="${p.id}" ${p.id === reference.id ? "selected" : ""}>${html(p.name)}</option>`).join("")}</select></label><p class="small-note">${located.length} of ${results.length} results have sourced coordinates. The map centers on a venue; your device location is never sent to the map.</p></div><div class="map-layout"><div><iframe title="Street map near ${html(reference.name)}" src="${html(mapUrl)}" loading="lazy" referrerpolicy="no-referrer"></iframe><p class="map-attribution">Map © OpenStreetMap contributors · ${external(mapLink(reference), "Open full map")}</p></div><div class="nearby-list"><p class="eyebrow">WITHIN 5 KM OF ${html(reference.name)}</p>${nearby.length ? nearby.map(({ place: p, distance }) => `<div><strong>${external(p.url, p.name)}</strong><span>${distance < 0.1 ? "< 0.1" : distance.toFixed(1)} km</span><small>${html(p.area)} · ${external(mapLink(p), "Map")}</small></div>`).join("") : '<p class="small-note">No other verified points within 5 km among these results. Try a broader area or another interest.</p>'}<p class="small-note">Distances are straight lines between address points, not walking routes or accessible entrances. See access details in the list below.</p></div></div>`;
 }
 function render() {
   syncFilters();
@@ -306,12 +397,12 @@ function render() {
       : state.query
         ? "Search <em>results.</em>"
         : state.view === "materials"
-          ? "Materials &amp; <em>reuse.</em>"
+          ? "Reuse &amp; supplies"
           : state.view === "community"
-            ? "Classes &amp; <em>communities.</em>"
+            ? "Find your people"
             : state.view === "people"
-              ? "People &amp; <em>creators.</em>"
-              : "What are you <em>into?</em>";
+              ? "People &amp; creators"
+              : "Activities to try";
   $("#results-title").innerHTML = title;
   $("#results-kicker").textContent =
     state.view === "saved" ? "SAVED ON THIS DEVICE" : "THE NYC HOBBY INDEX";
@@ -325,8 +416,22 @@ function render() {
           : state.view === "saved"
             ? "Projects, interests and plans you want to keep."
             : "Public programs and communities. Check current details.";
-  $("#result-summary").textContent =
-    `${results.length} ${state.view === "materials" ? "places" : state.view === "people" ? "profiles" : state.view === "community" ? "programs & groups" : "guides"} · ${areaName()}`;
+  const resultUnit =
+    state.view === "materials"
+      ? "places"
+      : state.view === "people"
+        ? "profiles"
+        : state.view === "community"
+          ? "programs & groups"
+          : "guides";
+  const unlocated = results.filter((r) => r.distance === null).length;
+  $("#result-summary").textContent = state.center
+    ? state.view === "people"
+      ? `${results.length} profiles · NYC · profiles are not distance-located`
+      : ["projects", "saved"].includes(state.view)
+        ? `${results.length} guides · related places prioritized near you`
+        : `${results.length - unlocated} ${resultUnit} ${areaName()}${unlocated ? ` · ${unlocated} changing / unlisted locations` : ""}`
+    : `${results.length} ${resultUnit} · ${areaName()}`;
   $("#active-query").hidden = !state.query;
   const interest = discovery.intent(state.query).hobbyIds[0];
   $("#active-query").innerHTML = state.query
@@ -371,13 +476,15 @@ function render() {
       ? "Save a guide with its bookmark, save an interest, or keep an editable inspiration plan. They’ll appear here on this device."
       : state.borough || state.neighborhood
         ? `No exact ${state.view === "projects" ? "guides" : "listings"} for these filters in ${areaName()}. Our directory is curated and still growing. Try all NYC or a related interest.`
-        : "Try a related interest or fewer filters. You can also browse the five collections above.";
+        : state.center
+          ? "No located results within this radius. Try 5 or 10 miles, include groups with changing venues, or choose an NYC neighborhood. This directory currently covers NYC."
+          : "Try a related interest or fewer filters.";
   $("#load-more").hidden = results.length <= state.limit;
   $("#load-more").textContent =
     `Show ${Math.min(12, results.length - state.limit)} more`;
   $("#directory-note").textContent =
     state.view === "projects" || state.view === "saved"
-      ? "Budgets are editorial starting estimates with borrowed or already-owned equipment. A lower bound can fit your budget; the full range may be higher. Check each guide."
+      ? "Time filters use the upper end of stated active time; drying and ongoing care can take longer. Budgets are starting estimates using borrowed or owned tools. Check each guide’s full range."
       : state.view === "materials"
         ? "Budget and free-start filters apply to project recommendations. Shop inventory, ownership, prices and tool access are not assumed. Directory locations are curated; use the address and external map link."
         : state.view === "people"
@@ -407,6 +514,8 @@ function clearFilters(includeArea = true) {
     query: "",
     category: "all",
     budget: "",
+    duration: "",
+    communityType: "groups",
     beginner: false,
     free: false,
     reuse: false,
@@ -414,6 +523,7 @@ function clearFilters(includeArea = true) {
     limit: 12,
   });
   if (includeArea) {
+    stopNearby();
     state.borough = "";
     state.neighborhood = "";
     persistArea();
@@ -436,17 +546,25 @@ function runQuery(query) {
   state.limit = 12;
   // New searches replace old search-derived constraints; area persists unless explicitly changed.
   state.budget = parsed.budget;
+  state.duration = parsed.duration;
+  if (parsed.communityType) state.communityType = parsed.communityType;
   state.beginner = parsed.beginner;
   state.free = parsed.free;
   state.reuse = parsed.reuse;
   state.category = "all";
   state.placeType = "";
   if (parsed.borough) {
+    stopNearby();
     state.borough = parsed.borough;
     state.neighborhood = parsed.neighborhood;
     persistArea();
   }
-  state.view = parsed.view || "projects";
+  state.view =
+    parsed.view ||
+    (/\bhobb(?:y|ies)|\bactivities?\b/.test(query.toLowerCase()) ||
+    state.view === "saved"
+      ? "projects"
+      : state.view);
   $("#search-query").value = query;
   $("#caption-container").hidden = !OH_UPLOAD_UI.count;
   $("#link-status").hidden = true;
@@ -640,16 +758,17 @@ function renderInspiration(result, templateSlug = null) {
     transcript: "Transcript text",
     manual: "Your description",
     document: "Uploaded text file",
+    ocr: "Screenshot text · check recognition",
   };
   const evidenceTags = result.evidence
     .map(
       (e) =>
-        `<span>${html(kinds[e.kind] || e.kind)} · ${e.origin === "user-upload" ? "from " + html(e.fileName || "your file") : e.origin === "user-supplied" ? "supplied by you" : "retrieved"}</span>`,
+        `<span>${html(kinds[e.kind] || e.kind)} · ${["user-upload", "on-device-ocr"].includes(e.origin) ? "from " + html(e.fileName || "your file") : e.origin === "user-supplied" ? "supplied by you" : "retrieved"}</span>`,
     )
     .join("");
   $("#link-result").hidden = false;
   $("#link-result").innerHTML =
-    `<div class="link-result-header"><div><p class="eyebrow">FROM YOUR INSPIRATION / ${result.provider === "uploads" ? "YOUR FILES" : html(result.provider.toUpperCase())}</p><h2 id="link-title">Give that idea a <em>starting point.</em></h2></div><button id="dismiss-inspiration" class="detail-close">Close ×</button></div><p class="link-disclosure">${html(result.disclosure)} ${result.provider === "uploads" ? "" : result.transcriptStatus === "not-retrieved" ? "No transcript was retrieved; we have not watched or transcribed the video." : "Transcript text was supplied by you or an authorized service; exact results still need review."}</p><div class="evidence-tags">${evidenceTags || "<span>No accessible content yet</span>"}<span>${result.confidence === "title-only" ? "Title match only · check the fit" : result.matches.length ? "Suggested guide · confirm the fit" : "Project unresolved"}</span></div>${result.attachments?.length ? '<div class="reference-block"><h3>Your reference files.</h3><div id="inspiration-file-gallery" class="reference-file-grid"></div></div>' : ""}<details class="evidence-detail"><summary>See the source text and access notes</summary>${result.evidence.map((e) => `<p><strong>${html(kinds[e.kind])} · ${html(e.origin)}</strong><br />${html(e.text)}</p>`).join("")}${result.warnings.map((w) => `<p>${html(w)}</p>`).join("")}${external(result.sourceUrl, "Open original inspiration")}</details><div class="inspiration-layout"><div class="inspiration-editor"><label for="plan-template">Choose a starter guide — check that it fits</label><select id="plan-template"><option value="">Start with your own notes</option>${data.projects.map((p) => `<option value="${p.slug}" ${p.slug === slug ? "selected" : ""}>${result.matches.some((m) => m.slug === p.slug) ? "Suggested: " : ""}${html(p.title)}</option>`).join("")}</select>${!result.matches.length ? '<p class="inspiration-empty">We couldn’t identify a hobby from the available text. Add a description above and search again, or choose a guide yourself.</p>' : ""}<label for="plan-title">Your plan’s title</label><input id="plan-title" maxlength="200" value="${html(project?.title || "My inspiration plan")}" /><label for="plan-materials">Starter supply suggestions — edit to fit your project</label><textarea id="plan-materials" maxlength="12000">${html(project ? project.materials.map((m) => m.name + " — " + m.quantity).join("\n") : result.requirements.map((m) => [m.quantity, m.name].filter(Boolean).join(" ")).join("\n"))}</textarea><label for="plan-steps">Suggested first steps — check the original instructions</label><textarea id="plan-steps" maxlength="12000">${html(project ? project.steps.join("\n") : result.steps.map((s) => s.text).join("\n"))}</textarea><div class="inspiration-actions"><button id="save-plan" class="button">Save my edited plan +</button>${project ? `<a href="#project/${project.slug}" class="button secondary">Open full guide</a>` : ""}</div><p id="attachment-change-note" class="small-note attachment-change-note" hidden>Your reference files changed. Choose Find my thing again before saving this plan.</p><p class="small-note">Your edits, reference files and source notes save on this device. Suggested supplies remain suggestions.</p></div><aside class="inspiration-aside"><h3>What the text actually says.</h3>${result.requirements.length ? `<ul class="extraction-list">${result.requirements.map((m) => `<li><strong>${html([m.quantity, m.name].filter(Boolean).join(" "))}</strong> · ${html(kinds[m.sourceKind] || "source text")}<br /><span class="small-note">“${html(m.evidence)}”</span></li>`).join("")}</ul>` : "<p>No exact supply requirements could be extracted. The editable supply list comes from a curated guide, if selected.</p>"}${result.steps.length ? `<p class="eyebrow">STEPS PRESENT IN THE TEXT</p><ol class="extraction-list">${result.steps.map((s) => `<li>${html(s.text)}</li>`).join("")}</ol>` : ""}${result.suggestions?.requirements?.length ? '<p class="eyebrow">INFERRED ADDITIONS · REVIEW BEFORE USING</p><ul class="extraction-list">' + result.suggestions.requirements.map((m) => "<li>" + html([m.quantity, m.name].filter(Boolean).join(" ")) + " — suggested, not extracted</li>").join("") + "</ul>" : ""}<h3>Put it on your map.</h3><p>Selected area: ${html(areaName())}. These are related resources, not confirmed stock or classes for this exact project.</p>${
+    `<div class="link-result-header"><div><p class="eyebrow">FROM YOUR INSPIRATION / ${result.provider === "uploads" ? "YOUR FILES" : html(result.provider.toUpperCase())}</p><h2 id="link-title">Your inspiration</h2></div><button id="dismiss-inspiration" class="detail-close">Close ×</button></div><p class="link-disclosure">${html(result.disclosure)} ${result.provider === "uploads" ? "" : result.transcriptStatus === "not-retrieved" ? "No transcript was retrieved; we have not watched or transcribed the video." : "Transcript text was supplied by you or an authorized service; exact results still need review."}</p><div class="evidence-tags">${evidenceTags || "<span>No accessible content yet</span>"}<span>${result.confidence === "title-only" ? "Title match only · check the fit" : result.matches.length ? "Suggested guide · confirm the fit" : "Project unresolved"}</span></div>${result.attachments?.length ? '<div class="reference-block"><h3>Your reference files.</h3><div id="inspiration-file-gallery" class="reference-file-grid"></div></div>' : ""}<details class="evidence-detail"><summary>See the source text and access notes</summary>${result.evidence.map((e) => `<p><strong>${html(kinds[e.kind])} · ${html(e.origin)}</strong><br />${html(e.text)}</p>`).join("")}${result.warnings.map((w) => `<p>${html(w)}</p>`).join("")}${external(result.sourceUrl, "Open original inspiration")}</details><div class="inspiration-matches">${result.matches.length ? `<h3>Activities you could try</h3><div class="matched-guides">${result.matches.map((m) => `<a href="#project/${html(m.slug)}">${html(m.title)}</a>`).join("")}</div>${project ? `<div class="inspiration-actions"><button class="button secondary" data-inspiration-view="community" data-interest="${html(data.hobbies[project.hobbyIds[0]].name)}">Find communities</button><button class="button secondary" data-inspiration-view="materials" data-interest="${html(data.hobbies[project.hobbyIds[0]].name)}">Find supplies</button></div>` : ""}` : `<p>We need readable text to find a useful match. Add the post’s caption, read a screenshot’s text, or describe what you want to try.</p><div class="inspiration-actions"><button type="button" class="button secondary" data-inspiration-input="caption">Add a caption / description</button><button type="button" class="button secondary" data-inspiration-input="photo">Add a screenshot</button></div>`}</div><details class="plan-details"><summary>Make and save a plan from this inspiration</summary><div class="inspiration-layout"><div class="inspiration-editor"><label for="plan-template">Choose a starter guide — check that it fits</label><select id="plan-template"><option value="">Start with your own notes</option>${data.projects.map((p) => `<option value="${p.slug}" ${p.slug === slug ? "selected" : ""}>${result.matches.some((m) => m.slug === p.slug) ? "Suggested: " : ""}${html(p.title)}</option>`).join("")}</select>${!result.matches.length ? '<p class="inspiration-empty">We couldn’t identify a hobby from the available text. Add a description above and search again, or choose a guide yourself.</p>' : ""}<label for="plan-title">Your plan’s title</label><input id="plan-title" maxlength="200" value="${html(project?.title || "My inspiration plan")}" /><label for="plan-materials">Starter supply suggestions — edit to fit your project</label><textarea id="plan-materials" maxlength="12000">${html(project ? project.materials.map((m) => m.name + " — " + m.quantity).join("\n") : result.requirements.map((m) => [m.quantity, m.name].filter(Boolean).join(" ")).join("\n"))}</textarea><label for="plan-steps">Suggested first steps — check the original instructions</label><textarea id="plan-steps" maxlength="12000">${html(project ? project.steps.join("\n") : result.steps.map((s) => s.text).join("\n"))}</textarea><div class="inspiration-actions"><button id="save-plan" class="button">Save my edited plan +</button>${project ? `<a href="#project/${project.slug}" class="button secondary">Open full guide</a>` : ""}</div><p id="attachment-change-note" class="small-note attachment-change-note" hidden>Your reference files or recognized text changed. Choose Find activities again before saving this plan.</p><p class="small-note">Your edits, reference files and source notes save on this device. Suggested supplies remain suggestions.</p></div><aside class="inspiration-aside"><h3>What the text actually says.</h3>${result.requirements.length ? `<ul class="extraction-list">${result.requirements.map((m) => `<li><strong>${html([m.quantity, m.name].filter(Boolean).join(" "))}</strong> · ${html(kinds[m.sourceKind] || "source text")}<br /><span class="small-note">“${html(m.evidence)}”</span></li>`).join("")}</ul>` : "<p>No exact supply requirements could be extracted. The editable supply list comes from a curated guide, if selected.</p>"}${result.steps.length ? `<p class="eyebrow">STEPS PRESENT IN THE TEXT</p><ol class="extraction-list">${result.steps.map((s) => `<li>${html(s.text)}</li>`).join("")}</ol>` : ""}${result.suggestions?.requirements?.length ? '<p class="eyebrow">INFERRED ADDITIONS · REVIEW BEFORE USING</p><ul class="extraction-list">' + result.suggestions.requirements.map((m) => "<li>" + html([m.quantity, m.name].filter(Boolean).join(" ")) + " — suggested, not extracted</li>").join("") + "</ul>" : ""}<h3>Put it on your map.</h3><p>Selected area: ${html(areaName())}. These are related resources, not confirmed stock or classes for this exact project.</p>${
       project
         ? [
             ...discovery.relatedPlaces(project, state).local,
@@ -666,7 +785,7 @@ function renderInspiration(result, templateSlug = null) {
             )
             .join("")
         : "<p>Choose a guide to connect your idea to local materials, learning and people.</p>"
-    }</aside></div>`;
+    }</aside></div></details>`;
   OH_UPLOAD_UI.decorate(result);
 }
 async function submitLink(raw) {
@@ -704,7 +823,9 @@ async function submitLink(raw) {
     renderInspiration(result);
     $("#link-status").textContent = result.matches.length
       ? "A related starter guide is ready. Review the source and confirm it fits."
-      : "No reliable project match yet. Add a caption or description, or choose a guide yourself.";
+      : result.evidence.length
+        ? "No close activity match yet. Try a clearer description or choose a guide."
+        : "This post’s content isn’t readable here. Paste its caption or add a screenshot, then read its text.";
     $("#link-result").scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
     $("#link-status").textContent = error.message;
@@ -721,7 +842,7 @@ function editorPlan(id) {
       ? plan.source.sourceUrl
       : "";
   $("#detail-root").innerHTML =
-    `<div class="detail-head"><a class="detail-brand" href="#saved">other hours.</a><button id="close-detail" class="detail-close">Close ×</button></div><div class="plan-editor"><p class="eyebrow">YOUR INSPIRATION PLAN · SAVED ON THIS DEVICE</p><h2 id="detail-title">Make it your own.</h2><div class="inspiration-editor"><label for="saved-plan-title">Title</label><input id="saved-plan-title" value="${html(plan.title)}" maxlength="200" />${plan.source?.attachments?.length ? '<div class="reference-block"><h3>Saved reference files.</h3><div id="saved-reference-files" class="reference-file-grid"></div></div>' : ""}<label for="saved-plan-materials">Your supply list</label><textarea id="saved-plan-materials" maxlength="12000">${html(plan.materials)}</textarea><label for="saved-plan-steps">Your steps</label><textarea id="saved-plan-steps" maxlength="12000">${html(plan.steps)}</textarea><div class="inspiration-actions"><button class="button" id="update-plan" data-plan="${html(id)}">Save changes ✓</button><button class="button secondary" id="copy-plan" data-plan="${html(id)}">Copy plan</button>${plan.projectSlug ? `<a class="button secondary" href="#project/${html(plan.projectSlug)}">Open related local guide</a>` : ""}</div><p class="small-note">User-edited notes and editorial suggestions. ${plan.source?.provider === "uploads" ? "References stay on this device; matches use your notes or text files." : plan.source?.transcriptStatus === "not-retrieved" ? "No transcript was retrieved." : "Review any source text and your own edits."}</p>${safeSource ? external(safeSource, "Original inspiration") : ""}<details class="evidence-detail"><summary>Preserved source notes</summary>${
+    `<div class="detail-head"><a class="detail-brand" href="#saved">other hours.</a><button id="close-detail" class="detail-close">Close ×</button></div><div class="plan-editor"><p class="eyebrow">YOUR INSPIRATION PLAN · SAVED ON THIS DEVICE</p><h2 id="detail-title">Make it your own.</h2><div class="inspiration-editor"><label for="saved-plan-title">Title</label><input id="saved-plan-title" value="${html(plan.title)}" maxlength="200" />${plan.source?.attachments?.length ? '<div class="reference-block"><h3>Saved reference files.</h3><div id="saved-reference-files" class="reference-file-grid"></div></div>' : ""}<label for="saved-plan-materials">Your supply list</label><textarea id="saved-plan-materials" maxlength="12000">${html(plan.materials)}</textarea><label for="saved-plan-steps">Your steps</label><textarea id="saved-plan-steps" maxlength="12000">${html(plan.steps)}</textarea><div class="inspiration-actions"><button class="button" id="update-plan" data-plan="${html(id)}">Save changes ✓</button><button class="button secondary" id="copy-plan" data-plan="${html(id)}">Copy plan</button>${plan.projectSlug ? `<a class="button secondary" href="#project/${html(plan.projectSlug)}">Open related local guide</a>` : ""}</div><p class="small-note">User-edited notes and editorial suggestions. ${plan.source?.provider === "uploads" ? "References stay on this device; matches use your notes, readable text files or recognized screenshot text." : plan.source?.transcriptStatus === "not-retrieved" ? "No transcript was retrieved." : "Review any source text and your own edits."}</p>${safeSource ? external(safeSource, "Original inspiration") : ""}<details class="evidence-detail"><summary>Preserved source notes</summary>${
       (Array.isArray(plan.source?.evidence) ? plan.source.evidence : [])
         .slice(0, 12)
         .map(
@@ -789,6 +910,7 @@ $("#search-query").addEventListener("input", () => {
   $("#link-status").hidden = true;
 });
 $("#borough-select").addEventListener("change", (event) => {
+  stopNearby();
   state.borough = event.target.value;
   state.neighborhood = "";
   state.limit = 12;
@@ -796,6 +918,7 @@ $("#borough-select").addEventListener("change", (event) => {
   render();
 });
 $("#neighborhood-select").addEventListener("change", (event) => {
+  stopNearby();
   state.neighborhood = event.target.value;
   if (state.neighborhood)
     state.borough = Object.keys(data.cities.nyc.boroughs).find((id) =>
@@ -808,6 +931,10 @@ $("#neighborhood-select").addEventListener("change", (event) => {
 for (const [id, key] of [
   ["category-select", "category"],
   ["budget-select", "budget"],
+  ["duration-select", "duration"],
+  ["community-type", "communityType"],
+  ["radius-select", "radiusKm"],
+  ["unlocated-filter", "includeUnlocated"],
   ["place-type", "placeType"],
   ["beginner-filter", "beginner"],
   ["free-filter", "free"],
@@ -821,6 +948,21 @@ for (const [id, key] of [
     state.limit = 12;
     render();
   });
+$("#use-location").addEventListener("click", () => nearby.locate());
+$("#clear-location").addEventListener("click", () => {
+  stopNearby();
+  const manual = storage.get("oh:preferences:v2", {});
+  state.borough =
+    manual && data.cities.nyc.boroughs[manual.borough] ? manual.borough : "";
+  state.neighborhood =
+    state.borough &&
+    data.cities.nyc.boroughs[state.borough].neighborhoods.includes(
+      manual.neighborhood,
+    )
+      ? manual.neighborhood
+      : "";
+  render();
+});
 $("#reset-search").addEventListener("click", () => {
   clearFilters();
   render();
@@ -830,6 +972,7 @@ $("#reset-empty").addEventListener("click", () => {
   showView("projects");
 });
 $("#clear-area").addEventListener("click", () => {
+  stopNearby();
   state.borough = "";
   state.neighborhood = "";
   persistArea();
@@ -890,6 +1033,17 @@ document.addEventListener("click", async (event) => {
   } else if (target.dataset.view) {
     event.preventDefault();
     showView(target.dataset.view);
+  } else if (target.dataset.inspirationInput) {
+    $("#caption-container").hidden = false;
+    $("#search-form").scrollIntoView({ behavior: "smooth", block: "start" });
+    if (target.dataset.inspirationInput === "photo") $("#photo-upload").click();
+    else $("#caption-input").focus({ preventScroll: true });
+  } else if (target.dataset.inspirationView) {
+    state.query = target.dataset.interest;
+    $("#search-query").value = state.query;
+    state.category = "all";
+    state.communityType = "groups";
+    showView(target.dataset.inspirationView);
   } else if (target.dataset.resultView) showView(target.dataset.resultView);
   else if (target.dataset.placeDisplay) {
     state.placeDisplay = target.dataset.placeDisplay;
@@ -1029,8 +1183,11 @@ document.addEventListener("click", async (event) => {
   }
 });
 $("#link-result").addEventListener("change", (event) => {
-  if (event.target.id === "plan-template")
+  if (event.target.id === "plan-template") {
     renderInspiration(currentInspiration, event.target.value);
+    $(".plan-details").open = true;
+    $("#plan-template").focus({ preventScroll: true });
+  }
 });
 $("#map-panel").addEventListener("change", (event) => {
   if (event.target.id === "map-reference") {

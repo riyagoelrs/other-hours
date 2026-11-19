@@ -3,7 +3,7 @@
 "use strict";
 const OH_DATA = {
   schemaVersion: 2,
-  updatedAt: "2026-11-15",
+  updatedAt: "2026-11-19",
   cities: {
     nyc: {
       id: "nyc",
@@ -9500,4 +9500,75 @@ const OH_DATA = {
     },
   },
 };
+// Host venues support distance sorting; they are not a claim about the next event location.
+for (const [id, placeId] of Object.entries({
+  cba: "books",
+  tac: "textile",
+  metal: "metal",
+  darkroom: "darkroom",
+  fabvolunteer: "fabscrap",
+  resistor: "resistor",
+  qbg: "qbg",
+  mmdg: "mmdg",
+  brac: "brac",
+  makerspace: "makerspace",
+}))
+  OH_DATA.communities[id].placeId = placeId;
+for (const [format, ids] of Object.entries({
+  meetup: ["purls", "embroidery"],
+  library: ["library", "queenslibrary", "nypl"],
+  workshop: ["cba", "tac", "brainery", "metal", "clay", "urban"],
+  critique: ["darkroom"],
+  volunteering: ["fabvolunteer"],
+  "maker-space": ["resistor", "makerspace"],
+  outdoors: ["birdalliance"],
+  garden: ["qbg"],
+  dance: ["mmdg"],
+  "community-arts": ["brac"],
+}))
+  for (const id of ids) OH_DATA.communities[id].format = format;
+OH_DATA.communities.resistor.url = "https://www.nycresistor.com/participate/";
+OH_DATA.communities.resistor.join =
+  "Start with a public Craft Night or the public Discord linked on the participation page. Check the live calendar before visiting; other drop-ins are not accommodated. Membership and equipment access have separate rules.";
+OH_DATA.communities.resistor.source = {
+  url: "https://www.nycresistor.com/participate/",
+  checkedAt: "2026-11-19",
+  status: "source-checked",
+  httpStatus: 200,
+};
+OH_DATA.communities.fabvolunteer.join =
+  "Choose a Brooklyn warehouse volunteer session on FABSCRAP’s official volunteer page and follow its registration instructions. Confirm current requirements before visiting.";
+OH_DATA.communities.fabvolunteer.source.checkedAt = "2026-11-19";
+OH_DATA.communities.urbansketchers = {
+  id: "urbansketchers",
+  name: "NYC Urban Sketchers",
+  type: "community",
+  format: "meetup",
+  kind: "DRAWING GROUP",
+  hobbyIds: ["painting"],
+  location: {
+    cityId: "nyc",
+    boroughs: Object.keys(OH_DATA.cities.nyc.boroughs),
+    neighborhoods: [],
+    citywide: true,
+  },
+  area: "NYC · changing meeting spots",
+  summary:
+    "Draw the city with other sketchbook people. The organizer’s blog lists outdoor outings and indoor sketching visits, with a host and meeting spot for each.",
+  url: "https://www.nycurbansketchers.org/",
+  beginnerFriendly: true,
+  free: false,
+  join: "Pick an NYC outing on the official blog and check its meeting spot, host and access notes. The group welcomes newcomers; some venues may charge admission. Bring your own drawing materials.",
+  source: {
+    url: "https://www.nycurbansketchers.org/",
+    checkedAt: "2026-11-19",
+    status: "source-checked",
+    httpStatus: 200,
+  },
+};
+OH_DATA.hobbies.painting.synonyms.push(
+  "sketching",
+  "urban sketching",
+  "sketchbook",
+);
 if (typeof module !== "undefined" && module.exports) module.exports = OH_DATA;
