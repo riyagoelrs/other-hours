@@ -137,14 +137,15 @@ for (const file of [
   "uploads.js",
   "upload-ui.js",
   "app.js",
+  "scene.js",
   "config.js",
   "styles.css",
   "site.webmanifest",
 ])
   assert.ok(index.includes(file));
-for (const path of [...index.matchAll(/(?:src|href)="\.\/([^"#]+)"/g)].map(
-  (m) => m[1],
-))
+for (const path of [
+  ...index.matchAll(/(?:src|srcset|href)="\.\/([^"#]+)"/g),
+].map((m) => m[1]))
   assert.ok(fs.existsSync(path), "Missing asset " + path);
 for (const name of [
   "journal",

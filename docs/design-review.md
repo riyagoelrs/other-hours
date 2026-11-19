@@ -1,6 +1,6 @@
 # Other Hours: before-and-after design review
 
-This document records the earlier field-guide redesign. The [simpler design refinement](simple-design.md) describes the current layout and verification limits. Screenshots below predate both that refinement and the intervening scrapbook pass.
+This document records the earlier field-guide redesign. The [workroom direction](workroom-design.md) describes the current layout and verification limits. Screenshots below predate the current presentation.
 
 ## Audit before implementation
 

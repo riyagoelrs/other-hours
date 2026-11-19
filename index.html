@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#f4efe8" />
+    <meta name="theme-color" content="#1844d8" />
     <meta
       name="description"
       content="A field guide to your free time. Discover hobbies, reuse materials, classes and creative people across New York City."
@@ -21,9 +21,9 @@
     <link rel="manifest" href="./site.webmanifest" />
     <link
       rel="preload"
-      href="./assets/fonts/instrument-serif-normal-400.ttf"
+      href="./assets/fonts/bricolage-grotesque-variable.woff2"
       as="font"
-      type="font/ttf"
+      type="font/woff2"
       crossorigin
     />
     <link rel="stylesheet" href="./styles.css" />
@@ -34,183 +34,216 @@
     <script defer src="./uploads.js"></script>
     <script defer src="./upload-ui.js"></script>
     <script defer src="./app.js"></script>
+    <script defer src="./scene.js"></script>
   </head>
   <body>
     <a class="skip-link" href="#discovery">Skip to discovery</a>
     <div id="site-shell">
-      <header class="site-header wrap">
-        <a class="brand" href="#home" aria-label="Other Hours home"
-          ><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
-            <g
-              fill="none"
-              stroke="currentColor"
-              stroke-width="3"
-              stroke-linecap="round"
-            >
-              <path
-                d="M24 3v15m0 12v15M3 24h15m12 0h15M9 9l11 11m8 8 11 11M9 39l11-11m8-8L39 9"
-              />
-            </g></svg
-          >other hours<span class="brand-dot">.</span></a
-        >
-        <nav class="main-nav" aria-label="Main navigation">
-          <div class="nav-inner">
-            <a href="#explore" data-view="projects">Hobbies</a>
-            <a href="#materials" data-view="materials">Materials</a>
-            <a href="#community" data-view="community">Classes</a>
-            <a href="#people" data-view="people">People</a>
-          </div>
-        </nav>
-        <a class="saved-link" href="#saved"
-          >Saved <span id="saved-count">0</span
-          ><svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 4h12v16l-6-4-6 4z" /></svg
-        ></a>
-      </header>
-      <main>
-        <section class="hero wrap" id="home">
-          <div class="hero-copy">
-            <p class="eyebrow">FOR ALL YOUR OTHER INTERESTS / NEW YORK CITY</p>
-            <h1>Make something<br />of your <em>free time.</em></h1>
-            <p class="hero-sub">
-              That thing you saw online? Go make it. Find the materials, places
-              and people to get started.
-            </p>
-            <form id="search-form" role="search">
-              <label for="search-query" class="sr-only"
-                >What are you into? Enter an idea, question or inspiration
-                link</label
+      <div class="site-top">
+        <header class="site-header wrap">
+          <a class="brand" href="#home" aria-label="Other Hours home"
+            ><svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+              <g
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
               >
-              <div class="search-row">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <circle cx="10.5" cy="10.5" r="6.5" />
-                  <path d="m16 16 5 5" /></svg
-                ><input
-                  id="search-query"
-                  type="text"
-                  placeholder="A hobby, an idea, or a link you saved…"
-                  autocomplete="off"
-                  maxlength="2048"
-                /><button type="submit" class="search-submit">
-                  Find my thing
-                </button>
-              </div>
-              <p class="search-help">
-                Search an idea, paste a link, or add your own reference files.
-              </p>
-              <div class="upload-tools" aria-label="Add inspiration files">
-                <button type="button" id="add-photos" class="upload-button">
-                  Add photos <span aria-hidden="true">＋</span>
-                </button>
-                <button type="button" id="add-files" class="upload-button">
-                  Add files <span aria-hidden="true">＋</span>
-                </button>
-                <span>or drop files or a link here</span>
-                <input
-                  type="file"
-                  id="photo-upload"
-                  accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/heic,image/heif,.heic,.heif"
-                  multiple
-                  hidden
+                <path
+                  d="M24 3v15m0 12v15M3 24h15m12 0h15M9 9l11 11m8 8 11 11M9 39l11-11m8-8L39 9"
                 />
-                <input
-                  type="file"
-                  id="file-upload"
-                  accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/heic,image/heif,video/mp4,video/quicktime,video/webm,application/pdf,text/plain,text/markdown,.heic,.heif,.mov,.pdf,.txt,.md"
-                  multiple
-                  hidden
+              </g></svg
+            >other hours<span class="brand-dot">.</span></a
+          >
+          <nav class="main-nav" aria-label="Main navigation">
+            <div class="nav-inner">
+              <a href="#explore" data-view="projects">Hobbies</a>
+              <a href="#materials" data-view="materials">Materials</a>
+              <a href="#community" data-view="community">Classes</a>
+              <a href="#people" data-view="people">People</a>
+            </div>
+          </nav>
+          <a class="saved-link" href="#saved"
+            >Saved <span id="saved-count">0</span
+            ><svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 4h12v16l-6-4-6 4z" /></svg
+          ></a>
+        </header>
+      </div>
+      <main>
+        <section
+          class="hero scene-hero"
+          id="home"
+          aria-label="Other Hours, a field guide to your free time"
+        >
+          <div class="scene-wall wrap">
+            <p class="scene-meta">
+              NEW YORK CITY / FOR ALL YOUR OTHER INTERESTS
+            </p>
+            <h1 class="scene-title"><span>other</span><em>hours.</em></h1>
+            <p class="scene-intro">
+              For the things you do<br />for the love of it.
+            </p>
+          </div>
+          <div class="scene-object">
+            <button
+              id="pick-hobby"
+              class="scene-pick"
+              type="button"
+              aria-label="Pick a hobby for me"
+            >
+              <picture>
+                <source
+                  media="(max-width: 800px)"
+                  srcset="./assets/scenes/worktable-mobile.svg"
                 />
-              </div>
-              <p
-                id="upload-status"
-                class="upload-status"
-                role="status"
-                hidden
-              ></p>
-              <div id="upload-draft" class="upload-draft" hidden>
-                <div class="upload-draft-heading">
-                  <span id="upload-count"></span
-                  ><button type="button" id="clear-uploads" class="text-button">
-                    Remove all
+                <img
+                  src="./assets/scenes/worktable.svg"
+                  alt=""
+                  width="800"
+                  height="600"
+                  fetchpriority="high"
+                />
+              </picture>
+              <span class="scene-pick-label">Pick a hobby for me</span>
+            </button>
+          </div>
+          <div class="scene-desk">
+            <div class="scene-workspace wrap">
+              <div class="hero-copy scene-search">
+                <h2 class="scene-search-title">What are you <em>into?</em></h2>
+                <p class="hero-sub">
+                  Bring an idea, a link, a photo. Leave with a plan.
+                </p>
+                <form id="search-form" role="search">
+                  <label for="search-query" class="sr-only"
+                    >What are you into? Enter an idea, question or inspiration
+                    link</label
+                  >
+                  <div class="search-row">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <circle cx="10.5" cy="10.5" r="6.5" />
+                      <path d="m16 16 5 5" /></svg
+                    ><input
+                      id="search-query"
+                      type="text"
+                      placeholder="A hobby, an idea, or a link you saved…"
+                      autocomplete="off"
+                      maxlength="2048"
+                    /><button type="submit" class="search-submit">
+                      Find my thing
+                    </button>
+                  </div>
+                  <p class="search-help">
+                    Search an idea, paste a link, or add your own reference
+                    files.
+                  </p>
+                  <div class="upload-tools" aria-label="Add inspiration files">
+                    <button type="button" id="add-photos" class="upload-button">
+                      Add photos <span aria-hidden="true">＋</span>
+                    </button>
+                    <button type="button" id="add-files" class="upload-button">
+                      Add files <span aria-hidden="true">＋</span>
+                    </button>
+                    <span>or drop files or a link here</span>
+                    <input
+                      type="file"
+                      id="photo-upload"
+                      accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/heic,image/heif,.heic,.heif"
+                      multiple
+                      hidden
+                    />
+                    <input
+                      type="file"
+                      id="file-upload"
+                      accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/heic,image/heif,video/mp4,video/quicktime,video/webm,application/pdf,text/plain,text/markdown,.heic,.heif,.mov,.pdf,.txt,.md"
+                      multiple
+                      hidden
+                    />
+                  </div>
+                  <p
+                    id="upload-status"
+                    class="upload-status"
+                    role="status"
+                    hidden
+                  ></p>
+                  <div id="upload-draft" class="upload-draft" hidden>
+                    <div class="upload-draft-heading">
+                      <span id="upload-count"></span
+                      ><button
+                        type="button"
+                        id="clear-uploads"
+                        class="text-button"
+                      >
+                        Remove all
+                      </button>
+                    </div>
+                    <div id="upload-list" class="reference-file-grid"></div>
+                    <p class="small-note">
+                      Up to 6 files, 100 MB total. Photos/PDFs: 20 MB each;
+                      videos: 50 MB; text: 1 MB. Saved with your plan on this
+                      device.
+                    </p>
+                    <p class="small-note">
+                      Add a description below to match a photo, PDF or video to
+                      a guide. Text files can supply their own materials and
+                      steps.
+                    </p>
+                  </div>
+                  <div id="caption-container" class="caption-container" hidden>
+                    <label for="caption-input"
+                      >Add the caption, a description, or a transcript you can
+                      share</label
+                    >
+                    <textarea
+                      id="caption-input"
+                      rows="3"
+                      maxlength="16000"
+                      placeholder="What are they making? Include any materials or steps mentioned."
+                    ></textarea>
+                    <label class="text-kind-label" for="text-kind"
+                      >This text is
+                      <select id="text-kind">
+                        <option value="manual">my description</option>
+                        <option value="description">
+                          a pasted caption / description
+                        </option>
+                        <option value="transcript">
+                          a transcript I’m authorized to share
+                        </option>
+                      </select></label
+                    >
+                    <p class="small-note">
+                      We try permitted public metadata. If a platform restricts
+                      access, your text gives us a useful starting point.
+                    </p>
+                  </div>
+                  <p id="link-status" role="status" hidden></p>
+                </form>
+                <div class="try-searches">
+                  <span>Or try</span
+                  ><button data-example="Make a leather journal">
+                    Bookbinding</button
+                  ><button data-example="Creative hobbies under $30">
+                    Under $30</button
+                  ><button
+                    data-example="Beginner sewing classes near the Garment District"
+                  >
+                    Sewing in NYC
                   </button>
                 </div>
-                <div id="upload-list" class="reference-file-grid"></div>
-                <p class="small-note">
-                  Up to 6 files, 100 MB total. Photos/PDFs: 20 MB each; videos:
-                  50 MB; text: 1 MB. Saved with your plan on this device.
-                </p>
-                <p class="small-note">
-                  Add a description below to match a photo, PDF or video to a
-                  guide. Text files can supply their own materials and steps.
-                </p>
+                <div id="recent-searches" class="recent-searches" hidden></div>
               </div>
-              <div id="caption-container" class="caption-container" hidden>
-                <label for="caption-input"
-                  >Add the caption, a description, or a transcript you can
-                  share</label
-                >
-                <textarea
-                  id="caption-input"
-                  rows="3"
-                  maxlength="16000"
-                  placeholder="What are they making? Include any materials or steps mentioned."
-                ></textarea>
-                <label class="text-kind-label" for="text-kind"
-                  >This text is
-                  <select id="text-kind">
-                    <option value="manual">my description</option>
-                    <option value="description">
-                      a pasted caption / description
-                    </option>
-                    <option value="transcript">
-                      a transcript I’m authorized to share
-                    </option>
-                  </select></label
-                >
-                <p class="small-note">
-                  We try permitted public metadata. If a platform restricts
-                  access, your text gives us a useful starting point.
-                </p>
-              </div>
-              <p id="link-status" role="status" hidden></p>
-            </form>
-            <div class="try-searches">
-              <span>Or try</span
-              ><button data-example="Make a leather journal">Bookbinding</button
-              ><button data-example="Creative hobbies under $30">
-                Under $30</button
-              ><button
-                data-example="Beginner sewing classes near the Garment District"
-              >
-                Sewing in NYC
-              </button>
             </div>
-            <div id="recent-searches" class="recent-searches" hidden></div>
           </div>
-          <a
-            class="hero-feature"
-            href="#project/beaded-charm"
-            aria-label="Open the beaded charm guide"
-          >
-            <div class="feature-image">
-              <img
-                src="./assets/photos/beadwork.webp"
-                alt="Hands threading beads at a worktable"
-                width="700"
-                height="1050"
-                fetchpriority="high"
-              />
-            </div>
-            <div class="feature-caption">
-              <span>BEADWORK</span><span>Bead a charm for everything.</span>
-            </div>
-          </a>
         </section>
-        <section class="collections wrap" aria-labelledby="collections-title">
-          <div class="section-label">
-            <h2 id="collections-title">BROWSE BY INTEREST</h2>
+        <section class="collections" aria-labelledby="collections-title">
+          <div class="wrap">
+            <div class="section-label">
+              <h2 id="collections-title">FOLLOW A CURIOSITY</h2>
+            </div>
+            <div class="collection-grid" id="collection-grid"></div>
           </div>
-          <div class="collection-grid" id="collection-grid"></div>
         </section>
         <section
           class="link-result wrap"
@@ -431,7 +464,7 @@
         <div class="wrap footer-inner">
           <div>
             <a class="brand" href="#home">other hours<span>.</span></a>
-            <p>For the things you do for the love of it.</p>
+            <p>Your hours. Your thing.</p>
           </div>
           <div>
             <p>A NYC field guide, made for real life.</p>
@@ -447,14 +480,6 @@
                 independent of the NYC listings.
               </p>
               <ul>
-                <li>
-                  <a
-                    href="https://www.pexels.com/photo/7585691/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >Beadwork: Miriam Alonso</a
-                  >
-                </li>
                 <li>
                   <a
                     href="https://www.pexels.com/photo/4614204/"

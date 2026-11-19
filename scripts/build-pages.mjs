@@ -12,6 +12,7 @@ for (const file of [
   "uploads.js",
   "upload-ui.js",
   "app.js",
+  "scene.js",
   "config.js",
   "site.webmanifest",
   ".nojekyll",

@@ -29,7 +29,14 @@ let css = fs
     /url\(['"]?\.\/([^)'"\s]+)['"]?\)/g,
     (_, file) =>
       'url("' +
-      encode(file, file.endsWith(".ttf") ? "font/ttf" : "image/svg+xml") +
+      encode(
+        file,
+        file.endsWith(".woff2")
+          ? "font/woff2"
+          : file.endsWith(".ttf")
+            ? "font/ttf"
+            : "image/svg+xml",
+      ) +
       '")',
   );
 let page = fs
@@ -44,6 +51,11 @@ for (const [id, url] of Object.entries(illustrations))
   page = page.replaceAll("./assets/illustrations/" + id + ".svg", url);
 for (const [file, url] of Object.entries(photos))
   page = page.replaceAll(file, url);
+for (const scene of ["worktable.svg", "worktable-mobile.svg"])
+  page = page.replaceAll(
+    "./assets/scenes/" + scene,
+    encode("assets/scenes/" + scene, "image/svg+xml"),
+  );
 page = page.replaceAll(
   "./assets/favicon.svg",
   encode("assets/favicon.svg", "image/svg+xml"),
@@ -70,7 +82,9 @@ const scripts =
   "\n;\nconst OH_PREVIEW_ASSETS=" +
   JSON.stringify(illustrations) +
   ";\n" +
-  app;
+  app +
+  "\n;\n" +
+  fs.readFileSync("scene.js", "utf8");
 page = page.replace(
   "</body>",
   () =>

@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-19",
+  "commands": [
+    "npm run check passed",
+    "33 Node tests passed",
+    "build:pages passed",
+    "build:preview passed; emitted JavaScript validated"
+  ],
+  "sceneChecks": [
+    "actual catalog and controller select valid non-repeating guide routes",
+    "global lexical OH_DATA supported",
+    "reduced motion disables scene frame requests while preserving the picker"
+  ],
+  "staticChecks": [
+    "unique HTML IDs and local src/srcset assets valid",
+    "SVG assets have no external resources or scripts",
+    "WOFF2 magic header valid",
+    "removed fonts/photo absent from the generated package",
+    "self-contained preview embeds scene, font, image and script assets"
+  ],
+  "contrast": [
+    {
+      "text": "#f5f5f1",
+      "surface": "#1844d8",
+      "ratio": 6.72
+    },
+    {
+      "text": "#201e1f",
+      "surface": "#ffabc8",
+      "ratio": 9.4
+    },
+    {
+      "text": "#3c2935",
+      "surface": "#ffabc8",
+      "ratio": 7.63
+    },
+    {
+      "text": "#ffabc8",
+      "surface": "#201e1f",
+      "ratio": 9.4
+    },
+    {
+      "text": "#ccc3d1",
+      "surface": "#201e1f",
+      "ratio": 9.7
+    },
+    {
+      "text": "#65616b",
+      "surface": "#f5f5f1",
+      "ratio": 5.53
+    },
+    {
+      "text": "#344021",
+      "surface": "#c7ec58",
+      "ratio": 8.19
+    },
+    {
+      "text": "#ffffff",
+      "surface": "#201e1f",
+      "ratio": 16.58
+    }
+  ],
+  "visualReview": [
+    "original scene asset rasterized and inspected",
+    "desktop and phone design studies inspected",
+    "font-width calculations at 320\u20131600 px"
+  ],
+  "previewBytes": 946166,
+  "browserQA": "unverified: supported managed browser route unavailable. Design studies are not browser captures."
+}

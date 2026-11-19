@@ -1,5 +1,7 @@
 # Other Hours: a simpler original direction
 
+Historical iteration, superseded by the [workroom direction](workroom-design.md). The beadwork hero photo and DM Sans files described here are no longer shipped.
+
 The user preferred the original site's simplicity and supplied [HUMAN.md](https://www.human-md.ai/) and an [Egor loader experiment](https://x.com/egorvert/status/2115141484957909187) as references. HUMAN.md's actual HTML, stylesheet and public preview image were inspected: the relevant influence here is the strong type hierarchy, dark ink/paper contrast and selective serif emphasis. The X post's official public oEmbed caption was available, but its animation was not; no motion treatment is claimed to reproduce it. No reference code, artwork or photography was reused.
 
 This pass returns to “Make something of your free time.” The header is compact, the navigation uses direct labels, and one real beadwork photograph sits beside the search. File/photo picking, dropping links and adding descriptions remain in the main search area. Area controls sit next to the results they refine.

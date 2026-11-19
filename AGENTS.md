@@ -10,12 +10,13 @@ Other Hours is an NYC-first, mobile-first hobby-to-real-life discovery website. 
 - `ingestion.js`: allowlisted platform URLs, official metadata, source-backed extraction and fallback.
 - `uploads.js`, `upload-ui.js`: local reference-file intake, native photo library picking, drop/paste and IndexedDB-backed plan attachments.
 - `app.js`: rendering, native project dialog, saved interests / plans, checklists and copy actions.
+- `scene.js`: the worktable guide picker and event-driven motion with reduced-motion support.
 - `config.js`: public optional service endpoint, never secrets.
 - `service/`: standalone, optional Node ingestion service. Pages must work without it.
 
 ## Design and accessibility
 
-Keep the simpler original direction: a compact header, Instrument Serif headlines, warm paper, dark ink and a restrained rust accent. Search and uploads come first; hobbies form a text-led index. Use a small amount of activity photography with real provenance in `assets/photos/README.md`. Do not add decorative tape, handwriting, collage layers, repeated card frames or themed slogans. Mood photography must not imply a pictured venue or person is a catalog listing. Avoid stock AI imagery, generic gradients and fake metrics. Preserve labels, keyboard operation, native dialog behavior, reduced-motion support and mobile layouts. Prefer useful content to bulk listings.
+Keep the HUMAN.md-inspired workroom direction: a cobalt type wall, pink search table, oversized Bricolage Grotesque with brief Instrument Serif interruptions, and the original timer/thread/book scene. The scene's hobby picker is a real guide entry point; native scrolling and reduced-motion preferences must remain intact. Keep forms outside the object layer on every viewport. Avoid returning to the beige serif/stock-photo hero, decorative tape or repeated framed cards. Original scene art lives in `assets/scenes/`; third-party photo provenance lives in `assets/photos/README.md`. Never imply pictured spaces are catalog listings. Preserve labels, keyboard operation, native dialogs, mobile file picking and readable controls.
 
 ## Data integrity
 
