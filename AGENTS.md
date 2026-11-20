@@ -16,7 +16,7 @@ Other Hours is an NYC-first, mobile-first hobby discovery website: find an activ
 
 ## Design and accessibility
 
-The user’s current preference is simplicity and usable discovery. Use the compact directory in `docs/finder.md`; the former cobalt/pink workroom is historical. Avoid giant decorative heroes, object scenes, tape, excessive framed cards or promotional sections before the actual results. Keep Activities, Communities and Reuse & supplies obvious, with visible interest/time/budget/area filters. Preserve keyboard operation, readable type, reduced motion, native dialog behavior and mobile photo-library picking without forcing camera capture.
+Use the current curiosity club direction in `docs/club-design.md`: an editorial masthead, strong Bricolage/Instrument hierarchy, real hobby photography, a visual activity board and restrained blue/pink/green fields. The prior bare finder and animated room are historical. Keep task controls useful: sidebar refinements on desktop, an obvious native filter disclosure with count on phones, real group/supply entry points and honest inspiration fallbacks. Avoid decorative tape, fake handwritten notes, oversized object scenes and ornamental loaders. Preserve keyboard operation, readable type, reduced motion, native dialog behavior and mobile photo-library picking without forcing camera capture. Activity photos are illustrative; do not imply they are specific guide outcomes or actual NYC listings. Source credits live in `assets/photos/README.md`.
 
 ## Integrity and location
 

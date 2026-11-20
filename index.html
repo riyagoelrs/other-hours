@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#fafaf8" />
+    <meta name="theme-color" content="#f5f3ed" />
     <meta
       name="description"
       content="A field guide to your free time. Discover hobbies, reuse materials, classes and creative people across New York City."
@@ -57,7 +57,13 @@
               </g></svg
             >other hours<span class="brand-dot">.</span></a
           >
-          <span class="header-city">The NYC hobby guide</span>
+          <span class="header-city"
+            >A field guide to <em>your other hours.</em></span
+          >
+          <nav class="header-nav" aria-label="Main navigation">
+            <a href="#explore" data-view="projects">Discover</a
+            ><a href="#community" data-view="community">Find your people</a>
+          </nav>
           <a class="saved-link" href="#saved"
             >Saved <span id="saved-count">0</span
             ><svg viewBox="0 0 24 24" aria-hidden="true">
@@ -71,141 +77,184 @@
           id="home"
           aria-labelledby="finder-title"
         >
-          <div class="finder-intro">
-            <p class="eyebrow">A LITTLE MORE LIFE IN YOUR FREE TIME</p>
-            <h1 id="finder-title">Find your next <em>thing.</em></h1>
-            <p>
-              Something to try. People to do it with. Places to get started.
-            </p>
-          </div>
-          <form id="search-form" role="search">
-            <label for="search-query" class="sr-only"
-              >What are you into? Enter an idea, question or inspiration
-              link</label
-            >
-            <div class="search-row">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="10.5" cy="10.5" r="6.5" />
-                <path d="m16 16 5 5" /></svg
-              ><input
-                id="search-query"
-                type="text"
-                placeholder="A hobby, an idea, or a link you saved…"
-                autocomplete="off"
-                maxlength="2048"
-              /><button type="submit" class="search-submit">
-                Find activities
-              </button>
+          <div class="finder-content">
+            <div class="finder-intro">
+              <p class="eyebrow">
+                <span class="intro-rule" aria-hidden="true"></span>FOR THE LOVE
+                OF DOING THINGS
+              </p>
+              <h1 id="finder-title">Make time<br />for <em>your thing.</em></h1>
+              <p>
+                Find a hobby, your people, and the places<br
+                  class="desktop-break"
+                />
+                to make it happen.
+              </p>
             </div>
-            <p class="search-help">
-              Paste a YouTube, TikTok, Instagram or Pinterest link, or add a
-              screenshot. Private posts need a caption.
-            </p>
-            <div class="upload-tools" aria-label="Add inspiration files">
-              <button type="button" id="add-photos" class="upload-button">
-                Photo / screenshot <span aria-hidden="true">＋</span>
-              </button>
-              <button type="button" id="add-files" class="upload-button">
-                Add files <span aria-hidden="true">＋</span>
-              </button>
-              <span>or drop files or a link here</span>
-              <input
-                type="file"
-                id="photo-upload"
-                accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/heic,image/heif,.heic,.heif"
-                multiple
-                hidden
-              />
-              <input
-                type="file"
-                id="file-upload"
-                accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/heic,image/heif,video/mp4,video/quicktime,video/webm,application/pdf,text/plain,text/markdown,.heic,.heif,.mov,.pdf,.txt,.md"
-                multiple
-                hidden
-              />
-            </div>
-            <p
-              id="upload-status"
-              class="upload-status"
-              role="status"
-              hidden
-            ></p>
-            <div id="upload-draft" class="upload-draft" hidden>
-              <div class="upload-draft-heading">
-                <span id="upload-count"></span
-                ><button type="button" id="clear-uploads" class="text-button">
-                  Remove all
+            <form id="search-form" role="search">
+              <label for="search-query" class="sr-only"
+                >What are you into? Enter an idea, question or inspiration
+                link</label
+              >
+              <div class="search-row">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="10.5" cy="10.5" r="6.5" />
+                  <path d="m16 16 5 5" /></svg
+                ><input
+                  id="search-query"
+                  type="text"
+                  placeholder="A hobby, an idea, or a link you saved…"
+                  autocomplete="off"
+                  maxlength="2048"
+                /><button type="submit" class="search-submit">
+                  Find activities
                 </button>
               </div>
-              <div id="upload-list" class="reference-file-grid"></div>
-              <p class="small-note">
-                Up to 6 files, 100 MB total. Photos/PDFs: 20 MB each; videos: 50
-                MB; text: 1 MB. Saved with your plan on this device.
+              <p class="search-help">
+                Paste a YouTube, TikTok, Instagram or Pinterest link, or add a
+                screenshot. Private posts need a caption.
               </p>
-              <p class="small-note">
-                Read screenshot text below, or describe your image. PDFs and
-                videos need a description; text files can supply their own
-                materials and steps.
-              </p>
-              <div class="ocr-tools" id="ocr-tools" hidden>
-                <button
-                  type="button"
-                  id="read-screenshots"
-                  class="upload-button"
-                >
-                  Read screenshot text
+              <div class="upload-tools" aria-label="Add inspiration files">
+                <button type="button" id="add-photos" class="upload-button">
+                  Photo / screenshot <span aria-hidden="true">＋</span>
                 </button>
-                <button
-                  type="button"
-                  id="cancel-ocr"
-                  class="text-button"
+                <button type="button" id="add-files" class="upload-button">
+                  Add files <span aria-hidden="true">＋</span>
+                </button>
+                <span>or drop files or a link here</span>
+                <input
+                  type="file"
+                  id="photo-upload"
+                  accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/heic,image/heif,.heic,.heif"
+                  multiple
                   hidden
-                >
-                  Cancel
-                </button>
-                <span>English text · stays on this device</span>
+                />
+                <input
+                  type="file"
+                  id="file-upload"
+                  accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/heic,image/heif,video/mp4,video/quicktime,video/webm,application/pdf,text/plain,text/markdown,.heic,.heif,.mov,.pdf,.txt,.md"
+                  multiple
+                  hidden
+                />
               </div>
-              <p id="ocr-status" class="small-note" role="status" hidden></p>
-              <div id="ocr-texts"></div>
+              <p
+                id="upload-status"
+                class="upload-status"
+                role="status"
+                hidden
+              ></p>
+              <div id="upload-draft" class="upload-draft" hidden>
+                <div class="upload-draft-heading">
+                  <span id="upload-count"></span
+                  ><button type="button" id="clear-uploads" class="text-button">
+                    Remove all
+                  </button>
+                </div>
+                <div id="upload-list" class="reference-file-grid"></div>
+                <p class="small-note">
+                  Up to 6 files, 100 MB total. Photos/PDFs: 20 MB each; videos:
+                  50 MB; text: 1 MB. Saved with your plan on this device.
+                </p>
+                <p class="small-note">
+                  Read screenshot text below, or describe your image. PDFs and
+                  videos need a description; text files can supply their own
+                  materials and steps.
+                </p>
+                <div class="ocr-tools" id="ocr-tools" hidden>
+                  <button
+                    type="button"
+                    id="read-screenshots"
+                    class="upload-button"
+                  >
+                    Read screenshot text
+                  </button>
+                  <button
+                    type="button"
+                    id="cancel-ocr"
+                    class="text-button"
+                    hidden
+                  >
+                    Cancel
+                  </button>
+                  <span>English text · stays on this device</span>
+                </div>
+                <p id="ocr-status" class="small-note" role="status" hidden></p>
+                <div id="ocr-texts"></div>
+              </div>
+              <div id="caption-container" class="caption-container" hidden>
+                <label for="caption-input"
+                  >Add the caption, a description, or a transcript you can
+                  share</label
+                >
+                <textarea
+                  id="caption-input"
+                  rows="3"
+                  maxlength="16000"
+                  placeholder="What are they making? Include any materials or steps mentioned."
+                ></textarea>
+                <label class="text-kind-label" for="text-kind"
+                  >This text is
+                  <select id="text-kind">
+                    <option value="manual">my description</option>
+                    <option value="description">
+                      a pasted caption / description
+                    </option>
+                    <option value="transcript">
+                      a transcript I’m authorized to share
+                    </option>
+                  </select></label
+                >
+                <p class="small-note">
+                  We try permitted public metadata. If a platform restricts
+                  access, your text gives us a useful starting point.
+                </p>
+              </div>
+              <p id="link-status" role="status" hidden></p>
+            </form>
+            <div class="try-searches">
+              <span>Try</span
+              ><button data-example="I have an hour">An hour to spare</button
+              ><button data-example="Free hobbies">A free start</button
+              ><button data-example="Sewing communities">Sewing groups</button
+              ><button id="pick-hobby" type="button">Surprise me</button>
             </div>
-            <div id="caption-container" class="caption-container" hidden>
-              <label for="caption-input"
-                >Add the caption, a description, or a transcript you can
-                share</label
-              >
-              <textarea
-                id="caption-input"
-                rows="3"
-                maxlength="16000"
-                placeholder="What are they making? Include any materials or steps mentioned."
-              ></textarea>
-              <label class="text-kind-label" for="text-kind"
-                >This text is
-                <select id="text-kind">
-                  <option value="manual">my description</option>
-                  <option value="description">
-                    a pasted caption / description
-                  </option>
-                  <option value="transcript">
-                    a transcript I’m authorized to share
-                  </option>
-                </select></label
-              >
-              <p class="small-note">
-                We try permitted public metadata. If a platform restricts
-                access, your text gives us a useful starting point.
-              </p>
-            </div>
-            <p id="link-status" role="status" hidden></p>
-          </form>
-          <div class="try-searches">
-            <span>Try</span
-            ><button data-example="I have an hour">An hour to spare</button
-            ><button data-example="Free hobbies">A free start</button
-            ><button data-example="Sewing communities">Sewing groups</button
-            ><button id="pick-hobby" type="button">Surprise me</button>
+            <div id="recent-searches" class="recent-searches" hidden></div>
           </div>
-          <div id="recent-searches" class="recent-searches" hidden></div>
+          <div class="hero-board" aria-label="A few things to get into">
+            <div class="board-note">
+              <span>THE CURIOSITY CLUB</span><em>Everyone starts somewhere.</em>
+            </div>
+            <a
+              class="board-photo board-photo-beads"
+              href="#project/beaded-charm"
+              ><img
+                src="./assets/photos/beads-table.jpg"
+                alt="Colorful beads and handmade necklaces spread across a table"
+                width="600"
+                height="400"
+                fetchpriority="high"
+              /><span
+                ><small>A LITTLE COLOR THERAPY</small>Make something
+                <em>just because.</em></span
+              ></a
+            >
+            <a
+              class="board-photo board-photo-clay"
+              href="#project/ceramic-trinket-dish"
+              ><img
+                src="./assets/photos/clay-club.jpg"
+                alt="Two people shaping clay together in a studio"
+                width="600"
+                height="400"
+              /><span>Try clay. <em>Get messy.</em></span></a
+            >
+            <span class="board-seal" aria-hidden="true"
+              ><svg viewBox="0 0 48 48">
+                <path d="M24 3v42M3 24h42M9 9l30 30M9 39 39 9" /></svg
+              >FOR THE<br /><em>fun</em> OF IT</span
+            >
+            <span class="board-bottom">A NEW SKILL. A GOOD AFTERNOON.</span>
+          </div>
         </section>
         <section
           class="link-result wrap"
@@ -239,180 +288,250 @@
               Starter guides, with materials and local resources.
             </p>
           </div>
-          <section class="location-strip" aria-label="Choose your area">
-            <div class="area-controls">
-              <span>Where?</span>
-              <label class="sr-only" for="city-select">City</label
-              ><select id="city-select" hidden>
-                <option value="nyc">New York City</option>
-              </select>
-              <label class="sr-only" for="borough-select">Borough</label
-              ><select id="borough-select">
-                <option value="">All NYC</option>
-              </select>
-              <label class="sr-only" for="neighborhood-select"
-                >Neighborhood</label
-              ><select id="neighborhood-select">
-                <option value="">All neighborhoods</option>
-              </select>
-              <span class="or-label">or</span
-              ><button id="use-location" class="upload-button" type="button">
-                Use my location
-              </button>
-              <button
-                id="clear-location"
-                class="text-button"
-                type="button"
+          <div class="discovery-layout">
+            <aside class="refinements" aria-label="Filter your discoveries">
+              <details id="filter-details" open>
+                <summary>
+                  Filter your finds
+                  <span id="filter-count" aria-hidden="true"></span
+                  ><span class="filter-chevron" aria-hidden="true"></span>
+                </summary>
+                <div class="refinement-content">
+                  <section class="location-strip" aria-label="Choose your area">
+                    <div class="area-controls">
+                      <span>Where?</span>
+                      <label class="sr-only" for="city-select">City</label
+                      ><select id="city-select" hidden>
+                        <option value="nyc">New York City</option>
+                      </select>
+                      <label class="sr-only" for="borough-select">Borough</label
+                      ><select id="borough-select">
+                        <option value="">All NYC</option>
+                      </select>
+                      <label class="sr-only" for="neighborhood-select"
+                        >Neighborhood</label
+                      ><select id="neighborhood-select">
+                        <option value="">All neighborhoods</option>
+                      </select>
+                      <span class="or-label">or</span
+                      ><button
+                        id="use-location"
+                        class="upload-button"
+                        type="button"
+                      >
+                        Use my location
+                      </button>
+                      <button
+                        id="clear-location"
+                        class="text-button"
+                        type="button"
+                        hidden
+                      >
+                        Choose area instead
+                      </button>
+                      <label id="radius-label" hidden
+                        >Within
+                        <select id="radius-select">
+                          <option value="1.609344">1 mile</option>
+                          <option value="4.828032" selected>3 miles</option>
+                          <option value="8.04672">5 miles</option>
+                          <option value="16.09344">10 miles</option>
+                        </select></label
+                      >
+                    </div>
+                    <p id="location-status" class="small-note" role="status">
+                      NYC directory. Choose an area or share your location for
+                      distance sorting.
+                    </p>
+                    <label id="unlocated-label" class="small-note" hidden
+                      ><input id="unlocated-filter" type="checkbox" checked />
+                      Also show groups and places with changing or unlisted
+                      locations</label
+                    >
+                  </section>
+                  <div class="filter-bar" id="filters">
+                    <div class="select-filters">
+                      <label for="category-select"
+                        >Interest
+                        <select id="category-select">
+                          <option value="all">Every interest</option>
+                        </select></label
+                      ><label id="duration-label" for="duration-select"
+                        >Time to try it<select id="duration-select">
+                          <option value="">Any time</option>
+                          <option value="30">30 minutes</option>
+                          <option value="60">An hour</option>
+                          <option value="180">Up to 3 hours</option>
+                          <option value="300">An afternoon</option>
+                        </select></label
+                      ><label id="budget-label" for="budget-select"
+                        >Starting budget
+                        <select id="budget-select">
+                          <option value="">Any budget</option>
+                          <option value="15">Under $15</option>
+                          <option value="30">Under $30</option>
+                          <option value="50">Under $50</option>
+                          <option value="100">Under $100</option>
+                        </select></label
+                      ><label
+                        id="community-type-label"
+                        for="community-type"
+                        hidden
+                        >Show<select id="community-type">
+                          <option value="groups">
+                            Groups &amp; communities
+                          </option>
+                          <option value="classes">
+                            Classes &amp; workshops
+                          </option>
+                          <option value="">All programs &amp; groups</option>
+                        </select></label
+                      ><label id="place-type-label" for="place-type" hidden
+                        >Place type
+                        <select id="place-type">
+                          <option value="">Every kind</option>
+                          <option value="reuse">Secondhand &amp; reuse</option>
+                          <option value="specialist-retail">
+                            Specialist shops
+                          </option>
+                          <option value="shared-equipment">
+                            Shared equipment
+                          </option>
+                          <option value="community-exchange">
+                            Community exchange
+                          </option>
+                          <option value="classes">Studios &amp; classes</option>
+                        </select></label
+                      >
+                    </div>
+                    <div class="toggle-filters">
+                      <label
+                        ><input type="checkbox" id="beginner-filter" />Beginner
+                        friendly</label
+                      ><label
+                        ><input type="checkbox" id="free-filter" />Free
+                        starts</label
+                      ><label
+                        ><input type="checkbox" id="reuse-filter" />Reuse /
+                        borrow first</label
+                      >
+                    </div>
+                  </div>
+                  <button id="reset-search" class="text-button">
+                    Clear filters
+                  </button>
+                </div>
+              </details>
+              <div class="sidebar-note">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                  <path d="M24 3v42M3 24h42M9 9l30 30M9 39 39 9" />
+                </svg>
+                <p>
+                  You don’t have to<br />be good at it.<br /><em
+                    >Just into it.</em
+                  >
+                </p>
+              </div>
+            </aside>
+            <div class="discovery-results">
+              <div class="results-summary">
+                <p id="result-summary" role="status"></p>
+                <div class="result-actions">
+                  <div
+                    id="place-display-controls"
+                    class="display-controls"
+                    aria-label="Place display"
+                    hidden
+                  >
+                    <button data-place-display="list" aria-pressed="true">
+                      List</button
+                    ><button data-place-display="map" aria-pressed="false">
+                      Venue map
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <section
+                id="map-panel"
+                class="map-panel"
+                aria-label="Map and nearby places"
                 hidden
-              >
-                Choose area instead
-              </button>
-              <label id="radius-label" hidden
-                >Within
-                <select id="radius-select">
-                  <option value="1.609344">1 mile</option>
-                  <option value="4.828032" selected>3 miles</option>
-                  <option value="8.04672">5 miles</option>
-                  <option value="16.09344">10 miles</option>
-                </select></label
-              >
-            </div>
-            <p id="location-status" class="small-note" role="status">
-              NYC directory. Choose an area or share your location for distance
-              sorting.
-            </p>
-            <label id="unlocated-label" class="small-note" hidden
-              ><input id="unlocated-filter" type="checkbox" checked /> Also show
-              groups and places with changing or unlisted locations</label
-            >
-          </section>
-          <div class="filter-bar" id="filters">
-            <div class="select-filters">
-              <label for="category-select"
-                >Interest
-                <select id="category-select">
-                  <option value="all">Every interest</option>
-                </select></label
-              ><label id="duration-label" for="duration-select"
-                >Time to try it<select id="duration-select">
-                  <option value="">Any time</option>
-                  <option value="30">30 minutes</option>
-                  <option value="60">An hour</option>
-                  <option value="180">Up to 3 hours</option>
-                  <option value="300">An afternoon</option>
-                </select></label
-              ><label id="budget-label" for="budget-select"
-                >Starting budget
-                <select id="budget-select">
-                  <option value="">Any budget</option>
-                  <option value="15">Under $15</option>
-                  <option value="30">Under $30</option>
-                  <option value="50">Under $50</option>
-                  <option value="100">Under $100</option>
-                </select></label
-              ><label id="community-type-label" for="community-type" hidden
-                >Show<select id="community-type">
-                  <option value="groups">Groups &amp; communities</option>
-                  <option value="classes">Classes &amp; workshops</option>
-                  <option value="">All programs &amp; groups</option>
-                </select></label
-              ><label id="place-type-label" for="place-type" hidden
-                >Place type
-                <select id="place-type">
-                  <option value="">Every kind</option>
-                  <option value="reuse">Secondhand &amp; reuse</option>
-                  <option value="specialist-retail">Specialist shops</option>
-                  <option value="shared-equipment">Shared equipment</option>
-                  <option value="community-exchange">Community exchange</option>
-                  <option value="classes">Studios &amp; classes</option>
-                </select></label
-              >
-            </div>
-            <div class="toggle-filters">
-              <label
-                ><input type="checkbox" id="beginner-filter" />Beginner
-                friendly</label
-              ><label
-                ><input type="checkbox" id="free-filter" />Free starts</label
-              ><label
-                ><input type="checkbox" id="reuse-filter" />Reuse / borrow
-                first</label
-              >
-            </div>
-          </div>
-          <div class="results-summary">
-            <p id="result-summary" role="status"></p>
-            <div class="result-actions">
-              <div
-                id="place-display-controls"
-                class="display-controls"
-                aria-label="Place display"
-                hidden
-              >
-                <button data-place-display="list" aria-pressed="true">
-                  List</button
-                ><button data-place-display="map" aria-pressed="false">
-                  Venue map
+              ></section>
+              <div id="active-query" class="active-query" hidden></div>
+              <div id="project-grid" class="project-grid"></div>
+              <div id="places-grid" class="directory-grid" hidden></div>
+              <div id="community-grid" class="directory-grid" hidden></div>
+              <div id="creator-grid" class="creator-grid" hidden></div>
+              <div id="saved-plans" hidden></div>
+              <div id="empty-state" class="empty-state" hidden>
+                <p class="eyebrow">A SMALL, CAREFULLY CURATED INDEX</p>
+                <h3>A different starting point?</h3>
+                <p id="empty-message">
+                  Try a related interest, another neighborhood, or a smaller set
+                  of filters.
+                </p>
+                <div>
+                  <button class="button" id="reset-empty">
+                    Explore the whole index</button
+                  ><button class="button secondary" id="clear-area">
+                    Look across NYC
+                  </button>
+                </div>
+              </div>
+              <div class="load-more-row">
+                <button id="load-more" class="button secondary" hidden>
+                  More things to try
                 </button>
               </div>
-              <button id="reset-search" class="text-button">
-                Clear filters
-              </button>
+              <p class="directory-note" id="directory-note">
+                Budgets are editorial starting estimates with borrowed or
+                already-owned equipment. Check guide ranges and local
+                availability.
+              </p>
             </div>
           </div>
-          <section
-            id="map-panel"
-            class="map-panel"
-            aria-label="Map and nearby places"
-            hidden
-          ></section>
-          <div id="active-query" class="active-query" hidden></div>
-          <div id="project-grid" class="project-grid"></div>
-          <div id="places-grid" class="directory-grid" hidden></div>
-          <div id="community-grid" class="directory-grid" hidden></div>
-          <div id="creator-grid" class="creator-grid" hidden></div>
-          <div id="saved-plans" hidden></div>
-          <div id="empty-state" class="empty-state" hidden>
-            <p class="eyebrow">A SMALL, CAREFULLY CURATED INDEX</p>
-            <h3>A different starting point?</h3>
-            <p id="empty-message">
-              Try a related interest, another neighborhood, or a smaller set of
-              filters.
-            </p>
-            <div>
-              <button class="button" id="reset-empty">
-                Explore the whole index</button
-              ><button class="button secondary" id="clear-area">
-                Look across NYC
-              </button>
-            </div>
-          </div>
-          <div class="load-more-row">
-            <button id="load-more" class="button secondary" hidden>
-              More things to try
-            </button>
-          </div>
-          <p class="directory-note" id="directory-note">
-            Budgets are editorial starting estimates with borrowed or
-            already-owned equipment. Check guide ranges and local availability.
-          </p>
         </section>
         <section class="collections wrap" aria-labelledby="collections-title">
           <h2 id="collections-title">Browse by interest</h2>
           <div class="collection-grid" id="collection-grid"></div>
         </section>
-        <div class="reuse-reminder wrap">
-          <p>Need materials? Try borrowing, sharing or buying secondhand.</p>
-          <button class="text-button" id="browse-reuse">
-            Find reuse &amp; supplies
-          </button>
-        </div>
+        <section
+          class="community-feature wrap"
+          aria-labelledby="community-feature-title"
+        >
+          <div class="community-feature-photo">
+            <img
+              src="./assets/photos/hobby-club.webp"
+              alt="Friends drawing and painting together around a shared project"
+              width="1000"
+              height="1500"
+              loading="lazy"
+            />
+          </div>
+          <div class="community-feature-copy">
+            <p class="eyebrow">THE BEST PART? THE PEOPLE.</p>
+            <h2 id="community-feature-title">
+              Find your<br /><em>kind of people.</em>
+            </h2>
+            <p>
+              A sewing circle. A sketchbook meetup. A place to borrow a tool and
+              stay for a conversation. Start with a real community near you.
+            </p>
+            <div class="feature-actions">
+              <button data-view="community" class="button">
+                Explore communities</button
+              ><button id="browse-reuse" class="text-button">
+                Find reuse &amp; supplies
+              </button>
+            </div>
+          </div>
+        </section>
       </main>
       <footer>
         <div class="wrap footer-inner">
           <div>
             <a class="brand" href="#home">other hours<span>.</span></a>
-            <p>More hobbies. More life.</p>
+            <p>For all your other interests.</p>
           </div>
           <div>
             <p>A NYC field guide, made for real life.</p>
@@ -421,6 +540,75 @@
               inventory, booking or official creator accounts.
             </p>
             <a href="#home" class="text-button">Back to search</a>
+            <details class="photo-credits">
+              <summary>Photography credits</summary>
+              <p>
+                Activity photography from Pexels. Pictured people and spaces are
+                independent of the NYC directory.
+              </p>
+              <a
+                href="https://www.pexels.com/@cottonbro/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >cottonbro studio</a
+              >
+              ·
+              <a
+                href="https://www.pexels.com/photo/18609437/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Lisett Kruusimäe</a
+              >
+              ·
+              <a
+                href="https://www.pexels.com/photo/7585691/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Miriam Alonso</a
+              >
+              ·
+              <a
+                href="https://www.pexels.com/photo/8107701/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Kaboompics</a
+              >
+              ·
+              <a
+                href="https://www.pexels.com/photo/16824669/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >stayhereforu</a
+              >
+              ·
+              <a
+                href="https://www.pexels.com/photo/5409706/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Amina Filkins</a
+              >
+              ·
+              <a
+                href="https://www.pexels.com/photo/36582881/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >fewmiracles</a
+              >
+              ·
+              <a
+                href="https://www.pexels.com/photo/28619432/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >K H</a
+              >
+              ·
+              <a
+                href="https://www.pexels.com/photo/9671928/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Alexey Demidov</a
+              >
+            </details>
           </div>
         </div>
       </footer>

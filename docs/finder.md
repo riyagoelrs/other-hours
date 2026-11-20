@@ -1,3 +1,5 @@
+> Functional behavior and verification record for the 19 November finder. The current visual direction is the [curiosity club](club-design.md), updated 20 November 2026.
+
 # Activity finder — 19 November 2026
 
 The primary task is now visible: find something to try, then find people and supplies. A compact search replaces the large cobalt/pink workroom. Activities, Communities and Reuse & supplies lead directly to filtered results. Typography, a blue accent and a small surprise button retain some personality without putting a visual scene before the task. The stylesheet is consolidated instead of layering another theme on the prior four layouts.

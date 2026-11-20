@@ -201,6 +201,20 @@ function updateLocationControls() {
 }
 function syncFilters() {
   updateLocationControls();
+  const refinements = [
+    state.category !== "all",
+    state.duration,
+    state.budget,
+    state.beginner,
+    state.free,
+    state.reuse,
+    state.borough,
+    state.neighborhood,
+    state.center,
+    state.placeType,
+    state.view === "community" && state.communityType !== "groups",
+  ].filter(Boolean).length;
+  $("#filter-count").textContent = refinements ? `(${refinements})` : "";
   $("#category-select").value = state.category;
   const budget = $("#budget-select");
   budget.querySelectorAll("[data-custom]").forEach((el) => el.remove());
@@ -265,9 +279,88 @@ function artFor(project) {
   if (/dance|bird|chess|writing/.test(project.visual)) return project.visual;
   return "print";
 }
-function projectCard({ item: p, localCount }) {
+const activityPhotos = {
+  bookbinding: {
+    src: "./assets/photos/photo-journal.jpg",
+    alt: "A journal filled with photographs and handmade paper details",
+    position: "50% 50%",
+  },
+  sewing: {
+    src: "./assets/photos/sewing.jpg",
+    alt: "A person working with fabric at a sewing machine",
+    position: "50% 55%",
+  },
+  embroidery: {
+    src: "./assets/photos/fabric.webp",
+    alt: "Fabric, thread and paper patterns on a worktable",
+    position: "50% 50%",
+  },
+  textiles: {
+    src: "./assets/photos/yarn.jpg",
+    alt: "Yarn, scissors and thread arranged beside a sewing machine",
+    position: "50% 50%",
+  },
+  crochet: {
+    src: "./assets/photos/yarn.jpg",
+    alt: "Yarn, scissors and thread arranged beside a sewing machine",
+    position: "50% 50%",
+  },
+  ceramics: {
+    src: "./assets/photos/clay-club.jpg",
+    alt: "Two people working on clay pieces together",
+    position: "50% 55%",
+  },
+  jewelry: {
+    src: "./assets/photos/beads-table.jpg",
+    alt: "Colorful beads and necklaces being assembled by hand",
+    position: "50% 50%",
+  },
+  painting: {
+    src: "./assets/photos/painting.jpg",
+    alt: "People painting and sharing an art project at a table",
+    position: "50% 55%",
+  },
+  printmaking: {
+    src: "./assets/photos/scrapbook.webp",
+    alt: "Paper, photographs and collage details in an open scrapbook",
+    position: "50% 50%",
+  },
+  gardening: {
+    src: "./assets/photos/flowers.webp",
+    alt: "People arranging flowers at a table",
+    position: "50% 50%",
+  },
+  writing: {
+    src: "./assets/photos/photo-journal.jpg",
+    alt: "A journal filled with photographs and handmade paper details",
+    position: "50% 50%",
+  },
+  reading: {
+    src: "./assets/photos/photo-journal.jpg",
+    alt: "A journal filled with photographs and handmade paper details",
+    position: "50% 50%",
+  },
+};
+function projectCard({ item: p, localCount }, i = 0) {
   const saved = savedProjects().includes(p.slug);
-  return `<article class="project-card"><button class="bookmark" data-save="${p.slug}" aria-label="${saved ? "Unsave" : "Save"} ${html(p.title)}" aria-pressed="${saved}">${bookmarkIcon}</button><div class="card-info"><span class="card-category">${html(data.hobbies[p.hobbyIds[0]].name)}</span><h3><a href="#project/${p.slug}">${html(p.title)}</a></h3><div class="card-meta"><span>${html(p.time)}</span><span>${p.budgetStatus === "provider-quote-required" ? "Check workshop fee" : p.budgetMin === 0 ? "Free start possible" : "$" + p.budgetMin + "–" + p.budgetMax + " est."}</span></div><p class="card-area">${state.center || state.borough || state.neighborhood ? (localCount ? `${localCount} related place${localCount === 1 ? "" : "s"} ${state.center ? "" : "in "}${html(areaName())}` : "Start anywhere · NYC resources") : p.reuseAvailable ? "Reuse and borrowing options" : "Start with a beginner workshop"}</p></div></article>`;
+  const photo =
+    p.slug === "beaded-necklace"
+      ? {
+          src: "./assets/photos/beadwork.webp",
+          alt: "Hands threading beads into jewelry",
+          position: "50% 60%",
+        }
+      : p.slug === "glass-bead-intro"
+        ? {
+            src: "./assets/photos/beads.jpg",
+            alt: "Colorful beads sorted in a supplies box",
+            position: "50% 50%",
+          }
+        : p.hobbyIds.map((id) => activityPhotos[id]).find(Boolean);
+  const image = photo
+    ? `<img src="${photo.src}" alt="${html(photo.alt)}" width="600" height="400" loading="lazy" style="object-position:${photo.position}" />`
+    : `<img src="./assets/illustrations/${artFor(p)}.svg" alt="" width="600" height="400" loading="lazy" />`;
+  return `<article class="project-card ${photo ? "has-photo" : "has-illustration"} card-tone-${i % 4}"><a class="project-visual" href="#project/${p.slug}" tabindex="-1" aria-hidden="true">${image}<span class="visual-label">${p.beginnerFriendly ? "BEGINNER FRIENDLY" : html(data.hobbies[p.hobbyIds[0]].name)}</span></a><button class="bookmark" data-save="${p.slug}" aria-label="${saved ? "Unsave" : "Save"} ${html(p.title)}" aria-pressed="${saved}">${bookmarkIcon}</button><div class="card-info"><span class="card-category">${html(data.hobbies[p.hobbyIds[0]].name)}</span><h3><a href="#project/${p.slug}">${html(p.title)}</a></h3><div class="card-meta"><span>${html(p.time)}</span><span>${p.budgetStatus === "provider-quote-required" ? "Check workshop fee" : p.budgetMin === 0 ? "Free start possible" : "$" + p.budgetMin + "–" + p.budgetMax + " est."}</span></div><p class="card-area">${state.center || state.borough || state.neighborhood ? (localCount ? `${localCount} related place${localCount === 1 ? "" : "s"} ${state.center ? "" : "in "}${html(areaName())}` : "Start anywhere · NYC resources") : p.reuseAvailable ? "Reuse and borrowing options" : "Start with a beginner workshop"}</p></div></article>`;
 }
 const placeTypes = {
   reuse: "SECONDHAND & REUSE",
@@ -402,7 +495,7 @@ function render() {
             ? "Find your people"
             : state.view === "people"
               ? "People &amp; creators"
-              : "Activities to try";
+              : "The hobby edit.";
   $("#results-title").innerHTML = title;
   $("#results-kicker").textContent =
     state.view === "saved" ? "SAVED ON THIS DEVICE" : "THE NYC HOBBY INDEX";

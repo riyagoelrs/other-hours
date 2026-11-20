@@ -17,10 +17,13 @@ const illustrations = Object.fromEntries(
 const photos = Object.fromEntries(
   fs
     .readdirSync("assets/photos")
-    .filter((f) => f.endsWith(".webp"))
+    .filter((f) => /\.(webp|jpe?g)$/.test(f))
     .map((file) => [
       "./assets/photos/" + file,
-      encode("assets/photos/" + file, "image/webp"),
+      encode(
+        "assets/photos/" + file,
+        file.endsWith(".webp") ? "image/webp" : "image/jpeg",
+      ),
     ]),
 );
 let css = fs
