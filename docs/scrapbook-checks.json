@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-18",
+  "checks": [
+    "npm run check passed",
+    "31 Node tests passed",
+    "build:pages passed",
+    "build:preview passed",
+    "Prettier CSS parse/format passed",
+    "HTML ids and local asset references valid",
+    "self-contained images, fonts and scripts embedded",
+    "new text/surface contrast pairs exceed 4.5:1"
+  ],
+  "photos": [
+    {
+      "path": "assets/photos/beadwork.webp",
+      "bytes": 40720
+    },
+    {
+      "path": "assets/photos/fabric.webp",
+      "bytes": 48472
+    },
+    {
+      "path": "assets/photos/flowers.webp",
+      "bytes": 76982
+    },
+    {
+      "path": "assets/photos/hobby-club.webp",
+      "bytes": 96432
+    },
+    {
+      "path": "assets/photos/scrapbook.webp",
+      "bytes": 41202
+    }
+  ],
+  "browserQA": "unverified: supported managed browser route unavailable; prior screenshots predate this style pass"
+}

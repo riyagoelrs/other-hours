@@ -1,0 +1,19 @@
+{
+  "name": "other-hours",
+  "version": "2.0.0",
+  "private": true,
+  "description": "A static NYC field guide to hobbies, materials and creative communities",
+  "scripts": {
+    "check": "node --check app.js && node --check finder.js && node --check nearby.js && node --check ocr.js && node --check data.js && node --check discovery.js && node --check ingestion.js && node --check uploads.js && node --check upload-ui.js && node --check service/server.mjs && node scripts/validate.mjs",
+    "test": "node --test scripts/*.test.mjs",
+    "build:pages": "node scripts/build-pages.mjs",
+    "serve": "python3 -m http.server 4173",
+    "service": "node service/server.mjs",
+    "build:preview": "node scripts/build-preview.mjs",
+    "check:ocr": "node scripts/check-ocr.mjs",
+    "check:dom": "node scripts/check-dom.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

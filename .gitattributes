@@ -1,0 +1,5 @@
+# Keep upstream OCR runtime bytes unchanged and keep review focused on our code.
+assets/ocr/*.js linguist-vendored=true
+assets/ocr/*.wasm.js -diff -text
+assets/ocr/*.gz binary
+assets/ocr/*LICENSE*.txt whitespace=-blank-at-eof

@@ -1,12 +1,12 @@
 {
   "name": "Other Hours",
   "short_name": "Other Hours",
-  "description": "Find the materials, places and people behind your next creative project.",
+  "description": "Find activities, local communities and reuse supplies for your next hobby.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#ede9dc",
-  "theme_color": "#ede9dc",
+  "background_color": "#f5f3ed",
+  "theme_color": "#f5f3ed",
   "icons": [
     {
       "src": "./assets/favicon.svg",

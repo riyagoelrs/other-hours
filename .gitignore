@@ -4,4 +4,9 @@ dist/
 .env
 .env.*
 !.env.example
+service/.env
 *.log
+work/
+playwright-report/
+test-results/
+__pycache__/

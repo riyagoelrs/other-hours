@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-20",
+  "node_regressions": {
+    "passed": 40
+  },
+  "dom_controller": {
+    "status": "passed",
+    "scope": "Node DOM integration, not browser rendering",
+    "flows": [
+      "initial activity results",
+      "time filtering",
+      "groups/classes switch",
+      "opt-in location and manual reset",
+      "coordinates not persisted",
+      "image attachment",
+      "recognized-text matching",
+      "stale-source save guard",
+      "link + caption fallback after removing files",
+      "unreadable link exposes caption and screenshot actions"
+    ],
+    "contentFetchCalls": 0
+  },
+  "source_checks": {
+    "unique_html_ids": 83,
+    "local_photo_files": 12,
+    "portable_photos_embedded": true,
+    "contrast_ratios": {
+      "ink on paper": 14.11,
+      "muted on paper": 5.16,
+      "blue on paper": 7.4,
+      "blue on pink": 5.38,
+      "white on blue": 8.09,
+      "control border on surface": 3.55
+    }
+  },
+  "builds": [
+    "pages",
+    "portable"
+  ],
+  "browser_rendering_verified": false,
+  "iphone_picker_verified": false,
+  "hosted_ocr_verified": false,
+  "limitation": "Supported cua_repl.js tool unavailable; no preview server or alternate browser path started."
+}
